@@ -1,11 +1,13 @@
 import Sign from "@/models/Sign";
+import CsvReader from "@/services/csvService";
 
 export default class SignService {
-  static getSomeSigns(): Sign[] {
+  static async getSomeSigns(): Promise<Sign[]> {
     const signs: Sign[] = [];
-    for (let i = 0; i < 100; i++) {
-      signs.push(new Sign(i, "random", "random"));
-    }
+    const things = await CsvReader.readWords();
+    things.map((r) => {
+      signs.push(new Sign(parseInt(r.id), r.word, r.categorytitle));
+    });
     return signs;
   }
 }

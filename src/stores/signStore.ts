@@ -1,37 +1,44 @@
-import Sign, { SignWithMeta } from "@/models/Sign";
+import { SignWithMeta } from "@/models/Sign";
+import SignService from "@/services/signService";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 export const useSignStore = defineStore("signStore", () => {
-  const currentSigns = ref<Sign[]>([]);
-  const selectedSigns = ref<number[]>([]);
-
-  function addCurrentSign(sign: Sign): void {
-    currentSigns.value.push(sign);
-  }
-
-  function getSigns(): SignWithMeta[] {
-    return currentSigns.value.map((s) => {
-      const selected = selectedSigns.value.includes(s.id);
-      return SignWithMeta.fromSign(s, selected);
-    });
+  const signs = ref<SignWithMeta[]>([]);
+  const displaySaved = ref<Boolean>(false);
+  const signsCount = computed<number>(() => {
+    return signs.value.length;
+  });
+  function setSigns(newSigns: SignWithMeta[]): void {
+    signs.value = newSigns;
   }
 
   function getSelectedSigns(): SignWithMeta[] {
-    const signs: Sign[] = currentSigns.value.filter((sign) =>
-      selectedSigns.value.includes(sign.id)
+    return signs.value.filter((s) => s.selected);
+  }
+
+  async function initializeSigns(): Promise<void> {
+    const _signs = await SignService.getSomeSigns();
+    _signs.map((s) => signs.value.push(SignWithMeta.fromSign(s, false)));
+  }
+
+  function getSignsFromRange(start: number, end: number) {
+    return signs.value.slice(start, end);
+  }
+
+  function getSignsContaining(s: string): SignWithMeta[] {
+    return signs.value.filter((swm) =>
+      swm.word.toLowerCase().includes(s.toLowerCase())
     );
-    return signs.map((s) => {
-      const selected = selectedSigns.value.includes(s.id);
-      return SignWithMeta.fromSign(s, selected);
-    });
   }
 
   return {
-    currentSigns,
-    selectedSigns,
-    addCurrentSign,
-    getSigns,
+    signs,
+    displaySaved,
+    signsCount,
+    setSigns,
     getSelectedSigns,
+    initializeSigns,
+    getSignsFromRange,
   };
 });

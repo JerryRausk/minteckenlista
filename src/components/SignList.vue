@@ -1,84 +1,115 @@
 <template>
-  <div class="signs">
-    <table>
-      <tr v-for="sign in displayedSigns" :key="sign.id">
-        <td class="id">
-          <a href="#">{{ sign.id }}</a>
-        </td>
-        <td>{{ sign.word }}</td>
-        <td>{{ sign.category }}</td>
-        <td>
-          <a
-            v-if="!sign.selected"
-            @click="$emit('signAdded', sign.id)"
-            href="#"
-            class="btn add"
-            title="Lägg till i aktuell lista"
-            >+</a
-          >
-          <a
-            v-else
-            @click="$emit('signRemoved', sign.id)"
-            href="#"
-            class="btn remove"
-            title="Ta bort från lista"
-            >X</a
-          >
-        </td>
-      </tr>
-    </table>
-    <div v-if="signs.length > 10">pagination here</div>
+  <div class="container flex-column sign-list">
+    <input type="text" placeholder="Sök..." />
+    <ul class="list-group">
+      <SignListItem
+        v-for="sign in displayedSigns"
+        :key="sign.id"
+        :sign="sign"
+      ></SignListItem>
+    </ul>
+    <div class="flex-row justify-content-between">
+      <button
+        type="button"
+        class="pagination-button"
+        @click="changePagination(itemsPerPagination * -1)"
+      >
+        ⬅️
+      </button>
+      <div class="pagination-showing">
+        {{ currentPaginationPosition }} -
+        {{
+          Math.min(
+            currentPaginationPosition + itemsPerPagination,
+            store.signsCount
+          )
+        }}
+      </div>
+      <button
+        type="button"
+        class="pagination-button"
+        @click="changePagination(itemsPerPagination)"
+      >
+        ➡️
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { SignWithMeta } from "@/models/Sign";
-const props = defineProps<{
-  signs: SignWithMeta[];
-}>();
+import SignListItem from "@/components/SignListItem.vue";
+import { useSignStore } from "@/stores/signStore";
+import { computed, onMounted, ref } from "vue";
 
-defineEmits<{
-  (e: "signAdded", signId: number): void;
-  (e: "signRemoved", signId: number): void;
-}>();
-const displayedSigns = props.signs.slice(0, 10);
+const store = useSignStore();
+onMounted(async () => {
+  store.initializeSigns();
+});
+
+const currentPaginationPosition = ref<number>(0);
+const itemsPerPagination = 12;
+const displayedSigns = computed(() => {
+  if (store.displaySaved) {
+    return store.getSelectedSigns();
+  }
+  return store.getSignsFromRange(
+    currentPaginationPosition.value,
+    currentPaginationPosition.value + itemsPerPagination
+  );
+});
+
+const changePagination = (delta: number): void => {
+  if (delta < 0 && currentPaginationPosition.value - delta < 0) {
+    currentPaginationPosition.value = 0;
+  }
+  if (delta > 0 && currentPaginationPosition.value + delta > store.signsCount) {
+    currentPaginationPosition.value = store.signsCount - itemsPerPagination;
+  }
+  currentPaginationPosition.value += delta;
+};
 </script>
 
 <style scoped>
-tr {
-  border-bottom: 0.8px solid rgba(0, 0, 0, 0.3);
+.sign-list {
+  min-width: 75%;
+  margin: auto;
+  max-width: 18em;
 }
-tr:nth-child(even) {
-  background-color: #f1efef53;
+.icon {
+  border: none;
+  background-color: transparent;
+  font-size: 1.2em;
 }
-.id {
-  margin-right: 4px;
-  min-width: 1.2rem;
-  max-width: 1.2rem;
-}
-table {
-  border-spacing: 0px;
-  border-collapse: collapse;
-  width: 25vw;
-}
-.signs {
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-  padding: 4px;
-}
-.btn {
-  padding-inline: 4px;
-  color: white;
-  font-style: normal;
-  font-weight: 600;
-  border-radius: 4px;
-  text-decoration: none;
-}
-.add {
-  background-color: blue;
+.form-check {
+  gap: 4px;
+  padding-left: 0;
 }
 
-.remove {
-  background-color: red;
+.form-check-input {
+  cursor: pointer;
+  width: 3em;
+  margin-inline: 4px;
+  padding: none;
+  border: none;
+  color: red;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e");
+}
+.form-check-input:checked {
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e");
+}
+.form-check-input:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e");
+  box-shadow: none;
+}
+
+.pagination-button {
+  padding: 4px;
+  background-color: transparent;
+  border: none;
+}
+.pagination-showing {
+  padding: 4px;
 }
 </style>
