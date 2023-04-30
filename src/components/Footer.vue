@@ -1,8 +1,11 @@
 <template>
   <div class="footer d-flex flex-row">
     <div class="footer-item-group d-flex flex-row">
-      <FooterItem title="Sparade" icon="❤️" @click="handleSavedClicked" />
-      <FooterItem title="Sök" icon="🔍" @click="handleSearchClicked" />
+      <FooterItem
+        title="Sparade"
+        :icon="savedIcon"
+        @click="handleSavedClicked"
+      />
     </div>
     <div class="footer-item-group d-flex flex-row">
       <FooterItem title="Dela" icon="✉️" @click="handleShareClicked" />
@@ -12,13 +15,13 @@
 <script setup lang="ts">
 import FooterItem from "@/components/FooterItem.vue";
 import { useSignStore } from "@/stores/signStore";
+import { computed } from "vue";
 const store = useSignStore();
 
+const savedIcon = computed<string>(() => (store.filterSaved ? "❤️" : "🤍"));
+
 function handleSavedClicked(): void {
-  store.displaySaved = true;
-}
-function handleSearchClicked(): void {
-  store.displaySaved = false;
+  store.toggleFilterSaved();
 }
 function handleShareClicked(): void {
   console.log("Share clicked");

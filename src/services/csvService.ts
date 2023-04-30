@@ -5,6 +5,7 @@ export default class CsvReader {
       .then((d) => {
         return parseAndCleanCSV(d);
       });
+    data.sort((a, b) => a["word"].localeCompare(b["word"]));
     return data;
   }
 }
@@ -21,9 +22,11 @@ function parseAndCleanCSV(csv: string): Record<string, string>[] {
     const row = rows[i].split(",");
     const rowData: Record<string, string> = {};
     for (let j = 0; j < columns.length; j++) {
-      rowData[columns[j]] = row[j];
+      rowData[columns[j]] = row[j] ? row[j].replace('"', "").trim() : "";
     }
-    parsedData.push(rowData);
+    if (rowData["word"] && rowData["word"] !== "Hittades ej") {
+      parsedData.push(rowData);
+    }
   }
   return parsedData;
 }

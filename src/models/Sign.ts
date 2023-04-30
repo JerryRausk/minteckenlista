@@ -2,20 +2,39 @@ export default class Sign {
   id: number;
   word: string;
   category: string;
+  description: string;
+  videoUrlSuffix: string;
 
-  constructor(id: number, word: string, category: string) {
-    (this.id = id), (this.word = word), (this.category = category);
+  constructor(
+    id: number,
+    word: string,
+    category: string,
+    description: string,
+    videoUrlSuffix: string
+  ) {
+    (this.id = id),
+      (this.word = word),
+      (this.category = category),
+      (this.description = description);
+    this.videoUrlSuffix = videoUrlSuffix;
   }
 }
 
-export class SignWithMeta extends Sign {
+export class SignWithMeta {
+  word: string;
+  category: string;
   selected: boolean;
+  signs: Sign[];
 
-  constructor(id: number, word: string, category: string, selected: boolean) {
-    super(id, word, category);
+  constructor(
+    word: string,
+    category: string,
+    selected: boolean,
+    signs: Sign[]
+  ) {
+    this.word = word;
+    this.category = category;
     this.selected = selected;
-  }
-  static fromSign(sign: Sign, selected: boolean) {
-    return new SignWithMeta(sign.id, sign.word, sign.category, selected);
+    this.signs = signs;
   }
 }

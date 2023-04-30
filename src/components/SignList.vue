@@ -1,72 +1,36 @@
 <template>
-  <div class="container flex-column sign-list">
-    <input type="text" placeholder="Sök..." />
+  <div class="container flex-column sign-list no-touch-strangeness">
+    <input
+      type="text"
+      placeholder="Sök..."
+      aria-label="Sök"
+      class="form-control search-input"
+      v-model="store.filterString"
+      @input="store.resetPaginationStart()"
+    />
     <ul class="list-group">
       <SignListItem
-        v-for="sign in displayedSigns"
-        :key="sign.id"
+        v-for="sign in store.getPaginatedSigns()"
+        :key="sign.word"
         :sign="sign"
+        @save-toggled="(e) => store.toggleSaved(e)"
       ></SignListItem>
     </ul>
-    <div class="flex-row justify-content-between">
-      <button
-        type="button"
-        class="pagination-button"
-        @click="changePagination(itemsPerPagination * -1)"
-      >
-        ⬅️
-      </button>
-      <div class="pagination-showing">
-        {{ currentPaginationPosition }} -
-        {{
-          Math.min(
-            currentPaginationPosition + itemsPerPagination,
-            store.signsCount
-          )
-        }}
-      </div>
-      <button
-        type="button"
-        class="pagination-button"
-        @click="changePagination(itemsPerPagination)"
-      >
-        ➡️
-      </button>
-    </div>
+    <SignListPagination />
   </div>
 </template>
 
 <script setup lang="ts">
 import SignListItem from "@/components/SignListItem.vue";
 import { useSignStore } from "@/stores/signStore";
-import { computed, onMounted, ref } from "vue";
+import { onMounted } from "vue";
+import SignListPagination from "./SignListPagination.vue";
 
 const store = useSignStore();
+
 onMounted(async () => {
-  store.initializeSigns();
+  await store.initializeSigns();
 });
-
-const currentPaginationPosition = ref<number>(0);
-const itemsPerPagination = 12;
-const displayedSigns = computed(() => {
-  if (store.displaySaved) {
-    return store.getSelectedSigns();
-  }
-  return store.getSignsFromRange(
-    currentPaginationPosition.value,
-    currentPaginationPosition.value + itemsPerPagination
-  );
-});
-
-const changePagination = (delta: number): void => {
-  if (delta < 0 && currentPaginationPosition.value - delta < 0) {
-    currentPaginationPosition.value = 0;
-  }
-  if (delta > 0 && currentPaginationPosition.value + delta > store.signsCount) {
-    currentPaginationPosition.value = store.signsCount - itemsPerPagination;
-  }
-  currentPaginationPosition.value += delta;
-};
 </script>
 
 <style scoped>
@@ -74,6 +38,12 @@ const changePagination = (delta: number): void => {
   min-width: 75%;
   margin: auto;
   max-width: 18em;
+  gap: 8px;
+}
+
+.search-input {
+  width: 16em;
+  margin-inline: auto;
 }
 .icon {
   border: none;
@@ -85,31 +55,7 @@ const changePagination = (delta: number): void => {
   padding-left: 0;
 }
 
-.form-check-input {
-  cursor: pointer;
-  width: 3em;
-  margin-inline: 4px;
-  padding: none;
-  border: none;
-  color: red;
-  background-color: transparent;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e");
-}
-.form-check-input:checked {
-  background-color: transparent;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e");
-}
-.form-check-input:focus {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e");
-  box-shadow: none;
-}
-
-.pagination-button {
-  padding: 4px;
-  background-color: transparent;
-  border: none;
-}
-.pagination-showing {
-  padding: 4px;
+.no-touch-strangeness {
+  touch-action: manipulation;
 }
 </style>

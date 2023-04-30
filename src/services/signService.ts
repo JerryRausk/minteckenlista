@@ -6,7 +6,15 @@ export default class SignService {
     const signs: Sign[] = [];
     const things = await CsvReader.readWords();
     things.map((r) => {
-      signs.push(new Sign(parseInt(r.id), r.word, r.categorytitle));
+      signs.push(
+        new Sign(
+          parseInt(r.id),
+          r.word,
+          r.categorytitle,
+          r.description,
+          r.videolink
+        )
+      );
     });
     return signs;
   }

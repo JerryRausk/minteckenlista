@@ -4,41 +4,114 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 export const useSignStore = defineStore("signStore", () => {
+  const itemsPerPagination = 12;
   const signs = ref<SignWithMeta[]>([]);
-  const displaySaved = ref<Boolean>(false);
-  const signsCount = computed<number>(() => {
-    return signs.value.length;
+  const filterSaved = ref<Boolean>(false);
+  const filterString = ref<string>("");
+  const currentPaginationStart = ref<number>(0);
+
+  const filteredSigns = computed<SignWithMeta[]>(() => {
+    if (filterSaved.value) {
+      return signs.value.filter((s) => s.selected);
+    }
+    return signs.value
+      .filter((s) => s.word !== undefined)
+      .filter((s) =>
+        s.word.toLowerCase().includes(filterString.value.toLowerCase())
+      );
   });
-  function setSigns(newSigns: SignWithMeta[]): void {
-    signs.value = newSigns;
-  }
 
-  function getSelectedSigns(): SignWithMeta[] {
-    return signs.value.filter((s) => s.selected);
-  }
+  const paginationRange = computed<Array<number>>(() => {
+    return [
+      currentPaginationStart.value,
+      Math.min(
+        currentPaginationStart.value + itemsPerPagination,
+        filteredSigns.value.length
+      ),
+    ];
+  });
 
-  async function initializeSigns(): Promise<void> {
-    const _signs = await SignService.getSomeSigns();
-    _signs.map((s) => signs.value.push(SignWithMeta.fromSign(s, false)));
-  }
+  const filteredSignsCount = computed<number>(() => {
+    return filteredSigns.value.length;
+  });
+
+  const currentPaginationIsFirst = computed<Boolean>(() => {
+    return currentPaginationStart.value === 0;
+  });
+
+  const currentPaginationIsLast = computed<Boolean>(() => {
+    return (
+      currentPaginationStart.value + itemsPerPagination >
+      filteredSigns.value.length
+    );
+  });
 
   function getSignsFromRange(start: number, end: number) {
     return signs.value.slice(start, end);
   }
 
-  function getSignsContaining(s: string): SignWithMeta[] {
-    return signs.value.filter((swm) =>
-      swm.word.toLowerCase().includes(s.toLowerCase())
+  function getPaginatedSigns(): SignWithMeta[] {
+    return filteredSigns.value.slice(
+      currentPaginationStart.value,
+      currentPaginationStart.value + itemsPerPagination
     );
   }
 
+  async function initializeSigns(): Promise<void> {
+    const _signs = await SignService.getSomeSigns();
+
+    _signs.map((s, i) => {
+      i > 0 && signs.value[signs.value.length - 1].word === s.word
+        ? signs.value[signs.value.length - 1].signs.push(s)
+        : signs.value.push(new SignWithMeta(s.word, s.category, false, [s]));
+    });
+  }
+
+  function toggleFilterSaved() {
+    filterSaved.value = !filterSaved.value;
+    currentPaginationStart.value = 0;
+  }
+
+  function nextPaginationPage() {
+    currentPaginationStart.value = Math.min(
+      filteredSigns.value.length,
+      currentPaginationStart.value + itemsPerPagination
+    );
+  }
+
+  function previousPaginationPage() {
+    currentPaginationStart.value = Math.max(
+      0,
+      currentPaginationStart.value - itemsPerPagination
+    );
+  }
+
+  function resetPaginationStart() {
+    currentPaginationStart.value = 0;
+  }
+
+  async function toggleSaved(word: string) {
+    const s = signs.value.find((swm) => swm.word === word);
+    if (s) {
+      s.selected = !s.selected;
+    }
+  }
+
   return {
-    signs,
-    displaySaved,
-    signsCount,
-    setSigns,
-    getSelectedSigns,
-    initializeSigns,
+    currentPaginationStart,
+    currentPaginationIsFirst,
+    currentPaginationIsLast,
+    filterSaved,
+    paginationRange,
+    filteredSignsCount,
+    filterString,
     getSignsFromRange,
+    getPaginatedSigns,
+    initializeSigns,
+    toggleFilterSaved,
+    nextPaginationPage,
+    previousPaginationPage,
+    resetPaginationStart,
+    toggleSaved,
   };
 });
