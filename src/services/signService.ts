@@ -9,10 +9,10 @@ export default class SignService {
       signs.push(
         new Sign(
           parseInt(r.id),
-          r.word,
-          r.categorytitle,
-          r.description,
-          r.videolink
+          r["word"],
+          r["category-title"],
+          r["description"],
+          r["video-link"]
         )
       );
     });

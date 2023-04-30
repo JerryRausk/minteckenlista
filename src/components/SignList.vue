@@ -8,7 +8,9 @@
       v-model="store.filterString"
       @input="store.resetPaginationStart()"
     />
+
     <ul class="list-group">
+      <Loader class="loader" v-if="!store.signsInitialized" />
       <SignListItem
         v-for="sign in store.getPaginatedSigns()"
         :key="sign.word"
@@ -16,11 +18,12 @@
         @save-toggled="(e) => store.toggleSaved(e)"
       ></SignListItem>
     </ul>
-    <SignListPagination />
+    <SignListPagination v-if="store.signsInitialized" />
   </div>
 </template>
 
 <script setup lang="ts">
+import Loader from "@/components/IsLoading.vue";
 import SignListItem from "@/components/SignListItem.vue";
 import { useSignStore } from "@/stores/signStore";
 import { onMounted } from "vue";
@@ -54,8 +57,10 @@ onMounted(async () => {
   gap: 4px;
   padding-left: 0;
 }
-
 .no-touch-strangeness {
   touch-action: manipulation;
+}
+.loader {
+  margin: auto;
 }
 </style>

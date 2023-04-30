@@ -7,6 +7,11 @@
         @click="handleSavedClicked"
       />
     </div>
+    <div class="credits">
+      <a href="https://teckensprakslexikon.su.se/" target="_blank"
+        >Material från Teckenspråkslexikon</a
+      >
+    </div>
     <div class="footer-item-group d-flex flex-row">
       <FooterItem title="Dela" icon="✉️" @click="handleShareClicked" />
     </div>
@@ -38,5 +43,10 @@ function handleShareClicked(): void {
   padding-inline: 12px;
   border-top: 1px solid rgba(200, 200, 200, 0.99);
   justify-content: space-between;
+}
+.credits {
+  justify-content: end;
+  margin-bottom: 8px;
+  font-size: 0.75em;
 }
 </style>

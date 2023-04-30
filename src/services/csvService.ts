@@ -11,22 +11,18 @@ export default class CsvReader {
 }
 
 function parseAndCleanCSV(csv: string): Record<string, string>[] {
+  const csvDelimiter = ";";
   const rows = csv.split("\n");
-  const columns = rows[0]
-    .replaceAll('"', "") // Sometime strings are wrapped in "
-    .split(",")
-    .map((s) => s.trim()); // Sometime there are extra spaces
+  const columns = rows[0].split(csvDelimiter);
 
   const parsedData: Record<string, string>[] = [];
   for (let i = 1; i < rows.length; i++) {
-    const row = rows[i].split(",");
+    const row = rows[i].split(csvDelimiter);
     const rowData: Record<string, string> = {};
     for (let j = 0; j < columns.length; j++) {
-      rowData[columns[j]] = row[j] ? row[j].replace('"', "").trim() : "";
+      rowData[columns[j]] = row[j] ? row[j] : "";
     }
-    if (rowData["word"] && rowData["word"] !== "Hittades ej") {
-      parsedData.push(rowData);
-    }
+    parsedData.push(rowData);
   }
   return parsedData;
 }

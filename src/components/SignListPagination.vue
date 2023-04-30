@@ -5,7 +5,7 @@
         type="button"
         class="pagination-button"
         @click="store.previousPaginationPage()"
-        v-if="!store.currentPaginationIsFirst"
+        :class="{ hide: store.currentPaginationIsFirst }"
       >
         ⬅️
       </button>
@@ -16,7 +16,7 @@
         type="button"
         class="pagination-button"
         @click="store.nextPaginationPage()"
-        v-if="!store.currentPaginationIsLast"
+        :class="{ hide: store.currentPaginationIsLast }"
       >
         ➡️
       </button>
@@ -33,5 +33,8 @@ const store = useSignStore();
   background-color: transparent;
   border: none;
   font-size: 1.5em;
+}
+.hide {
+  visibility: hidden;
 }
 </style>

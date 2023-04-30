@@ -4,11 +4,12 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 export const useSignStore = defineStore("signStore", () => {
-  const itemsPerPagination = 12;
+  const itemsPerPagination = 10;
   const signs = ref<SignWithMeta[]>([]);
   const filterSaved = ref<Boolean>(false);
   const filterString = ref<string>("");
   const currentPaginationStart = ref<number>(0);
+  const signsInitialized = ref<Boolean>(false);
 
   const filteredSigns = computed<SignWithMeta[]>(() => {
     if (filterSaved.value) {
@@ -65,6 +66,7 @@ export const useSignStore = defineStore("signStore", () => {
         ? signs.value[signs.value.length - 1].signs.push(s)
         : signs.value.push(new SignWithMeta(s.word, s.category, false, [s]));
     });
+    signsInitialized.value = true;
   }
 
   function toggleFilterSaved() {
@@ -98,6 +100,7 @@ export const useSignStore = defineStore("signStore", () => {
   }
 
   return {
+    signsInitialized,
     currentPaginationStart,
     currentPaginationIsFirst,
     currentPaginationIsLast,
