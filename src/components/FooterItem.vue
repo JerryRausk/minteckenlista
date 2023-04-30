@@ -19,10 +19,6 @@ const props = defineProps<{
   display: flex;
   cursor: pointer;
 }
-.footer-item:hover {
-  background-color: rgba(233, 233, 240, 0.98);
-  font-size: 1.1em;
-}
 .footer-item-icon {
   margin-top: -2px;
   font-size: 1.5em;

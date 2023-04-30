@@ -15,7 +15,6 @@ import SignList from "@/components/SignList.vue";
 <style scoped>
 .home {
   min-height: 100vh;
-  background-color: rgba(255, 0, 0, 0.1);
   padding-bottom: 6em;
 }
 .title {

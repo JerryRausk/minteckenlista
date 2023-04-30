@@ -38,9 +38,9 @@ onMounted(async () => {
 
 <style scoped>
 .sign-list {
-  min-width: 75%;
   margin: auto;
-  max-width: 18em;
+  width: 95%;
+  max-width: 32em;
   gap: 8px;
 }
 

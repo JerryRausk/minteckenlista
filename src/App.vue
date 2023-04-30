@@ -8,7 +8,7 @@ import Home from "@/views/homeView.vue";
 
 <style>
 #app {
-  background-color: rgba(0, 0, 255, 0.1);
+  background-color: rgba(255, 0, 0, 0.03);
   min-height: 100vh;
   display: flex;
 }
