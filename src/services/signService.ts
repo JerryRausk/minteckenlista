@@ -2,7 +2,7 @@ import Sign from "@/models/Sign";
 import CsvReader from "@/services/csvService";
 
 export default class SignService {
-  static async getSomeSigns(): Promise<Sign[]> {
+  static async getFileSigns(): Promise<Sign[]> {
     const signs: Sign[] = [];
     const things = await CsvReader.readWords();
     things.map((r) => {
