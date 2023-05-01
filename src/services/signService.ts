@@ -10,7 +10,9 @@ export default class SignService {
         new Sign(
           parseInt(r.id),
           r["word"],
-          r["category-title"],
+          r["category-title"]
+            ? r["category-title"].split(" / ")[0]
+            : "Okategoriserat",
           r["description"],
           r["video-link"]
         )

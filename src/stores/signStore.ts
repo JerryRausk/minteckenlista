@@ -8,19 +8,37 @@ export const useSignStore = defineStore("signStore", () => {
   const signs = ref<SignWithMeta[]>([]);
   const filterSaved = ref<Boolean>(false);
   const filterString = ref<string>("");
+  const filterCateogry = ref<string>("");
   const currentPaginationStart = ref<number>(0);
   const signsInitialized = ref<Boolean>(false);
   let signIndexedDb: IDBDatabase | null = null;
 
   const filteredSigns = computed<SignWithMeta[]>(() => {
+    let _signs = signs.value.filter((s) =>
+      s.word.toLowerCase().includes(filterString.value.toLowerCase())
+    );
+
     if (filterSaved.value) {
-      return signs.value.filter((s) => s.selected);
+      _signs = _signs.filter((s) => s.selected);
     }
-    return signs.value
-      .filter((s) => s.word !== undefined)
-      .filter((s) =>
-        s.word.toLowerCase().includes(filterString.value.toLowerCase())
-      );
+
+    if (filterCateogry.value) {
+      _signs = _signs.filter((s) => s.category === filterCateogry.value);
+    }
+
+    return _signs;
+  });
+
+  const filteredSignsIgnoringCateogry = computed<SignWithMeta[]>(() => {
+    let _signs = signs.value.filter((s) =>
+      s.word.toLowerCase().includes(filterString.value.toLowerCase())
+    );
+
+    if (filterSaved.value) {
+      _signs = _signs.filter((s) => s.selected);
+    }
+
+    return _signs;
   });
 
   const paginationRange = computed<Array<number>>(() => {
@@ -31,6 +49,16 @@ export const useSignStore = defineStore("signStore", () => {
         filteredSigns.value.length
       ),
     ];
+  });
+
+  const availableCategories = computed<Array<string>>(() => {
+    const ac: string[] = [];
+    filteredSignsIgnoringCateogry.value.map((s) => {
+      if (!ac.includes(s.category)) {
+        ac.push(s.category);
+      }
+    });
+    return ac;
   });
 
   const filteredSignsCount = computed<number>(() => {
@@ -188,7 +216,9 @@ export const useSignStore = defineStore("signStore", () => {
     currentPaginationStart,
     currentPaginationIsFirst,
     currentPaginationIsLast,
+    availableCategories,
     filterSaved,
+    filterCateogry,
     paginationRange,
     filteredSignsCount,
     filterString,

@@ -1,13 +1,9 @@
 <template>
   <div class="container flex-column sign-list no-touch-strangeness">
-    <input
-      type="text"
-      placeholder="Sök..."
-      aria-label="Sök"
-      class="form-control search-input"
-      v-model="store.filterString"
-      @input="store.resetPaginationStart()"
-    />
+    <div class="flex-row justify-content-between align-items-end">
+      <Search />
+      <Picklist />
+    </div>
 
     <ul class="list-group">
       <Loader class="loader" v-if="!store.signsInitialized" />
@@ -24,9 +20,11 @@
 
 <script setup lang="ts">
 import Loader from "@/components/IsLoading.vue";
+import Search from "@/components/Search.vue";
 import SignListItem from "@/components/SignListItem.vue";
 import { useSignStore } from "@/stores/signStore";
 import { onMounted } from "vue";
+import Picklist from "./Picklist.vue";
 import SignListPagination from "./SignListPagination.vue";
 
 const store = useSignStore();
@@ -42,11 +40,6 @@ onMounted(async () => {
   width: 95%;
   max-width: 32em;
   gap: 8px;
-}
-
-.search-input {
-  width: 16em;
-  margin-inline: auto;
 }
 .icon {
   border: none;

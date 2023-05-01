@@ -1,11 +1,13 @@
 <template>
-  <li class="list-group-item d-flex flex-column">
+  <li class="list-group-item flex-column">
     <div
       class="list-item-header justify-content-between align-items-center flex-row"
       @click="toggleOpen"
     >
       <div class="ms-2 me-auto flex-column">
-        <div class="fw-bold">{{ StringHelper.CapitalizeFirst(sign.word) }}</div>
+        <div class="fw-bold">
+          {{ StringHelper.CapitalizeFirst(sign.word) }}
+        </div>
       </div>
 
       <div class="saved-icon-container" @click="emitSaveToggled">
