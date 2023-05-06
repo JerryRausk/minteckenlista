@@ -1,13 +1,12 @@
 {
-  "name": "vue-base-template",
+  "name": "min-teckenlista",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "serve": "vite preview",
-    "test": "",
-    "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore --fix src"
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.7",
@@ -18,10 +17,9 @@
     "vue": "^3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.32.3",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
-    "@vercel/node": "^2.14.0",
+    "@vercel/node": "^2",
     "@vitejs/plugin-vue": "^4",
     "@vue/eslint-config-typescript": "^11",
     "eslint": "^8",
@@ -31,6 +29,7 @@
     "prettier": "^2",
     "typescript": "^5",
     "vite": "^4",
-    "vue-eslint-parser": "^9"
+    "vue-eslint-parser": "^9",
+    "vue-tsc": "^1"
   }
 }

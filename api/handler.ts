@@ -1,9 +1,11 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-export default function handler(
+const handleRequest = async (
   request: VercelRequest,
   response: VercelResponse
-) {
-  console.log("Hello??????");
-  return response.status(200).json({ Yo: "Im here" });
-}
+) => {
+  console.log(request.method);
+  response.status(200).send("Hello there");
+};
+
+export default handleRequest;

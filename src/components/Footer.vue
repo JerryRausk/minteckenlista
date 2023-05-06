@@ -1,6 +1,6 @@
 <template>
   <div class="footer d-flex flex-row">
-    <div class="footer-item-group d-flex flex-row">
+    <div class="footer-item-group d-flex flex-row" style="visibility: hidden">
       <FooterItem
         title="Sparade"
         :icon="savedIcon"
@@ -8,6 +8,7 @@
       />
     </div>
     <div class="credits">
+      <h6 v-if="store.currentList === 'local'">Enhetslista 🔴</h6>
       <a href="https://teckensprakslexikon.su.se/" target="_blank"
         >Material från Teckenspråkslexikon</a
       >
@@ -45,8 +46,10 @@ function handleShareClicked(): void {
   justify-content: space-between;
 }
 .credits {
-  justify-content: end;
+  justify-content: space-between;
   margin-bottom: 8px;
   font-size: 0.75em;
+  margin-top: 4px;
+  text-align: center;
 }
 </style>

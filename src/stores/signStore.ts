@@ -10,6 +10,7 @@ export const useSignStore = defineStore("signStore", () => {
   const filterString = ref<string>("");
   const filterCateogry = ref<string>("");
   const currentPaginationStart = ref<number>(0);
+  const currentList = ref<string>("local");
   const signsInitialized = ref<Boolean>(false);
   let signIndexedDb: IDBDatabase | null = null;
 
@@ -216,6 +217,7 @@ export const useSignStore = defineStore("signStore", () => {
     currentPaginationStart,
     currentPaginationIsFirst,
     currentPaginationIsLast,
+    currentList,
     availableCategories,
     filterSaved,
     filterCateogry,

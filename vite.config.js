@@ -1,17 +1,19 @@
 import vue from "@vitejs/plugin-vue";
+import * as path from "path";
 import { defineConfig } from "vite";
 
-const path = require("path");
 export default defineConfig({
   plugins: [vue()],
+  build: {
+    target: "esnext",
+    polyfillDynamicImport: false,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    //extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    //mainFields: ["module"]
     
-  },
-  build: {
-    target: "esnext"
   }
 })
