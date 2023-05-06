@@ -1,10 +1,9 @@
-export const config = {
-  runtime: "edge",
-  regions: ["arn1"], // only execute this function on arn1 (Stockholm)
-};
+import { VercelRequest, VercelResponse } from "@vercel/node";
 
-export default (request: Request) => {
-  return new Response(
-    `Hello, from ${request.url} I'm now an Edge Function! Sweet`
-  );
-};
+export default function handler(
+  request: VercelRequest,
+  response: VercelResponse
+) {
+  console.log("Hello??????");
+  return response.status(200).json({ Yo: "Im here" });
+}
