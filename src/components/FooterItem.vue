@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   title?: string;
   icon: string;
 }>();

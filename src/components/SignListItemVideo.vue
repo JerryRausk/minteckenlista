@@ -13,16 +13,12 @@
 </template>
 <script setup lang="ts">
 import Sign from "@/models/Sign";
-const props = defineProps<{
+defineProps<{
   sign: Sign;
 }>();
 
 function handleVideoClicked(e: Event) {
   e.stopPropagation();
-}
-
-async function timeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 </script>
 <style scoped>

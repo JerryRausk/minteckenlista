@@ -19,7 +19,7 @@
       <hr />
       <ul v-if="sign.signs.length > 1" class="variant-list d-flex flex-row">
         <li
-          v-for="(variant, index) in sign.signs"
+          v-for="(_, index) in sign.signs"
           class="variant-list-item"
           :class="{ 'variant-list-item-active': index === activeVariant }"
         >

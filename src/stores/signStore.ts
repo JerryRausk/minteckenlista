@@ -1,4 +1,4 @@
-import { SignWithMeta } from "@/models/Sign";
+import Sign, { SignWithMeta } from "@/models/Sign";
 import SignService from "@/services/signService";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -92,7 +92,7 @@ export const useSignStore = defineStore("signStore", () => {
     initIndexDb();
     const _signs = await SignService.getFileSigns();
     // Get stuff from file
-    _signs.map((s, i) => {
+    _signs.map((s: Sign, i: number) => {
       i > 0 && signs.value[signs.value.length - 1].word === s.word
         ? signs.value[signs.value.length - 1].signs.push(s)
         : signs.value.push(new SignWithMeta(s.word, s.category, false, [s]));
@@ -149,7 +149,7 @@ export const useSignStore = defineStore("signStore", () => {
       console.error("Couldnt open indexDB", e);
     };
 
-    openRequest.onupgradeneeded = (e) => {
+    openRequest.onupgradeneeded = () => {
       console.info("DB version is not up to date, needs migrating!");
       signIndexedDb = openRequest.result;
 
@@ -158,7 +158,7 @@ export const useSignStore = defineStore("signStore", () => {
       signIndexedDb.createObjectStore("savedSigns", { keyPath: "word" });
     };
 
-    openRequest.onsuccess = (_) => {
+    openRequest.onsuccess = () => {
       signIndexedDb = openRequest.result;
     };
   }

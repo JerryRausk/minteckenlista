@@ -5,7 +5,7 @@ export default class SignService {
   static async getFileSigns(): Promise<Sign[]> {
     const signs: Sign[] = [];
     const things = await CsvReader.readWords();
-    things.map((r) => {
+    things.map((r: Record<string, string>) => {
       signs.push(
         new Sign(
           parseInt(r.id),

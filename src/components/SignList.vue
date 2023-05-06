@@ -16,7 +16,7 @@
         v-for="sign in store.getPaginatedSigns()"
         :key="sign.word"
         :sign="sign"
-        @save-toggled="(e) => store.toggleSaved(e)"
+        @save-toggled="(w: string) => store.toggleSaved(w)"
       ></SignListItem>
     </ul>
     <SignListPagination v-if="store.signsInitialized" />
