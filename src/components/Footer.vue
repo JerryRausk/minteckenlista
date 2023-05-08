@@ -1,4 +1,9 @@
 <template>
+  <Teleport to="body">
+    <Transition name="modal">
+      <ShareModal v-if="shareModalOpen" @close-modal="shareModalOpen = false" />
+    </Transition>
+  </Teleport>
   <div class="footer d-flex flex-row">
     <div class="footer-item-group d-flex flex-row" style="visibility: hidden">
       <FooterItem
@@ -8,29 +13,31 @@
       />
     </div>
     <div class="credits">
-      <h6 v-if="store.currentList === 'local'">Enhetslista 🔴</h6>
+      <h6 v-if="store.currentList.Url === 'local'">Lokal lista (Offline)</h6>
+      <h6 v-else>
+        {{ store.currentList.PublicName ?? store.currentList.Url }}
+      </h6>
       <a href="https://teckensprakslexikon.su.se/" target="_blank"
         >Material från Teckenspråkslexikon</a
       >
     </div>
     <div class="footer-item-group d-flex flex-row">
-      <FooterItem title="Dela" icon="✉️" @click="handleShareClicked" />
+      <FooterItem title="Dela" icon="✉️" @click="shareModalOpen = true" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import FooterItem from "@/components/FooterItem.vue";
+import ShareModal from "@/components/ShareModal.vue";
 import { useSignStore } from "@/stores/signStore";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 const store = useSignStore();
 
 const savedIcon = computed<string>(() => (store.filterSaved ? "❤️" : "🤍"));
+const shareModalOpen = ref<boolean>(false);
 
 function handleSavedClicked(): void {
   store.toggleFilterSaved();
-}
-function handleShareClicked(): void {
-  console.log("Share clicked");
 }
 </script>
 <style scoped>

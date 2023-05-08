@@ -3,16 +3,45 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("POSTGRES_PRISMA_URL")
-  directUrl         = env("POSTGRES_URL_NON_POOLING")
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model sharedlists {
-  id         String   @id
-  publicname String   @unique
-  created    DateTime
-  updated    DateTime
+model List {
+  id         Int      @id @default(autoincrement())
+  url        String   @unique @default(uuid())
+  publicName String?  @unique
+  created    DateTime @default(now())
+  updated    DateTime @default(now())
+  listItems  ListItem[]
+  listEvents ListEvent[]
+
+  @@index([url])
+}
+
+model ListItem {
+  id         Int      @id @default(autoincrement())
+  word       String
+  added      DateTime @default(now())
+  listId     Int
+  list       List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
+}
+
+model ListEvent {
+  id        Int     @id @default(autoincrement())
+  event     Events
+  eventData String  @db.VarChar(128)
+  listId    Int
+  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  eventDate DateTime @default(now())
+
+  @@index([listId])
+}
+
+enum Events {
+  addWord
+  removeWord
 }

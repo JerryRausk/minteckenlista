@@ -1,3 +1,4 @@
+import SignList from "@/models/SharedList";
 import Sign, { SignWithMeta } from "@/models/Sign";
 import SignService from "@/services/signService";
 import { defineStore } from "pinia";
@@ -10,9 +11,14 @@ export const useSignStore = defineStore("signStore", () => {
   const filterString = ref<string>("");
   const filterCateogry = ref<string>("");
   const currentPaginationStart = ref<number>(0);
-  const currentList = ref<string>("local");
+  const currentList = ref<SignList>(new SignList(0, "local", undefined, null));
   const signsInitialized = ref<Boolean>(false);
-  let signIndexedDb: IDBDatabase | null = null;
+  /*const localStorageService = new LocalStorageService(
+    "savedSigns",
+    "savedSigns",
+    "savedSigns",
+    "word"
+  );*/
 
   const filteredSigns = computed<SignWithMeta[]>(() => {
     let _signs = signs.value.filter((s) =>
@@ -89,7 +95,6 @@ export const useSignStore = defineStore("signStore", () => {
   }
 
   async function initializeSigns(): Promise<void> {
-    initIndexDb();
     const _signs = await SignService.getFileSigns();
     // Get stuff from file
     _signs.map((s: Sign, i: number) => {
@@ -98,12 +103,21 @@ export const useSignStore = defineStore("signStore", () => {
         : signs.value.push(new SignWithMeta(s.word, s.category, false, [s]));
     });
 
-    if (signIndexedDb) {
-      updateSaveStateFromIdb(signIndexedDb);
-    }
+    //localStorageService.getItemsFromIdb(setSavedFromIdb);
 
     signsInitialized.value = true;
   }
+
+  /*
+  async function setSavedFromIdb(word: string): Promise<void> {
+    const wordToUpdate = signs.value.find((swm) => swm.word === word);
+    if (wordToUpdate) {
+      wordToUpdate.selected = true;
+    } else {
+      console.error("Found word in idb that doesnt exist...");
+    }
+  }
+  */
 
   function toggleFilterSaved() {
     filterSaved.value = !filterSaved.value;
@@ -128,88 +142,46 @@ export const useSignStore = defineStore("signStore", () => {
     currentPaginationStart.value = 0;
   }
 
+  function resetSaved() {
+    signs.value.map((swm) => (swm.selected = false));
+  }
+
+  function setSaved(word: string) {
+    const sign = signs.value.find(
+      (swm) => swm.word.toLowerCase() === word.toLowerCase()
+    );
+    if (sign) {
+      sign.selected = true;
+    } else {
+      console.error(`Tried to set unknown word ${word} to saved.`);
+    }
+  }
+
+  function unsetSaved(word: string) {
+    const sign = signs.value.find(
+      (swm) => swm.word.toLowerCase() === word.toLowerCase()
+    );
+    if (sign) {
+      sign.selected = false;
+    } else {
+      console.error(`Tried to set unknown word ${word} to not saved.`);
+    }
+  }
+
   async function toggleSaved(word: string) {
     const s = signs.value.find((swm) => swm.word === word);
     if (s) {
       s.selected = !s.selected;
-      if (signIndexedDb) {
-        if (s.selected) {
-          insertIndexDb(signIndexedDb, word);
-        } else {
-          deleteIndexDb(signIndexedDb, word);
-        }
-      }
-    }
-  }
-
-  //Indexdb Stuff
-  function initIndexDb() {
-    const openRequest = window.indexedDB.open("savedSigns", 1);
-    openRequest.onerror = (e) => {
-      console.error("Couldnt open indexDB", e);
-    };
-
-    openRequest.onupgradeneeded = () => {
-      console.info("DB version is not up to date, needs migrating!");
-      signIndexedDb = openRequest.result;
-
-      signIndexedDb.onerror = (e) =>
-        console.error("something went wrong when migrating the db.", e);
-      signIndexedDb.createObjectStore("savedSigns", { keyPath: "word" });
-    };
-
-    openRequest.onsuccess = () => {
-      signIndexedDb = openRequest.result;
-    };
-  }
-
-  async function updateSaveStateFromIdb(db: IDBDatabase): Promise<void> {
-    const objectStore = db.transaction("savedSigns").objectStore("savedSigns");
-
-    const request = objectStore.openCursor();
-
-    request.onsuccess = (_) => {
-      const cursor = request.result;
-
-      if (!cursor) {
-        return;
-      }
-
-      if (cursor.value.word !== undefined) {
-        setSavedFromIdb(cursor.value.word);
+      if (s.selected) {
+        // localStorageService.insertIndexDb(word);
       } else {
-        console.error("Object in idb corrupt", cursor.value);
+        // localStorageService.deleteIndexDb(word);
       }
-
-      cursor.continue();
-    };
-  }
-
-  async function setSavedFromIdb(word: string): Promise<void> {
-    const wordToUpdate = signs.value.find((swm) => swm.word === word);
-    if (wordToUpdate) {
-      wordToUpdate.selected = true;
-    } else {
-      console.error("Found word in idb that doesnt exist...");
     }
   }
 
-  async function insertIndexDb(db: IDBDatabase, key: string): Promise<void> {
-    const transaction = db.transaction("savedSigns", "readwrite");
-    const objectStore = transaction.objectStore("savedSigns");
-    const objectStoreRequest = objectStore.add({ word: key });
-    objectStoreRequest.onerror = (e) => {
-      console.error(`Couldnt insert ${key} into db`, e);
-    };
-  }
-
-  async function deleteIndexDb(db: IDBDatabase, key: string): Promise<void> {
-    const transaction = db.transaction("savedSigns", "readwrite");
-    const objectStore = transaction.objectStore("savedSigns");
-    const objectStoreRequest = objectStore.delete(key);
-    objectStoreRequest.onerror = (e) => {
-      console.error(`Couldnt delete ${key} from db`, e);
-    };
+  function setCurrentList(list: SignList) {
+    currentList.value = list;
   }
 
   return {
@@ -232,5 +204,9 @@ export const useSignStore = defineStore("signStore", () => {
     previousPaginationPage,
     resetPaginationStart,
     toggleSaved,
+    setCurrentList,
+    setSaved,
+    unsetSaved,
+    resetSaved,
   };
 });

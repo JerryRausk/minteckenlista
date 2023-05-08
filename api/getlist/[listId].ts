@@ -25,10 +25,10 @@ export default async function handleRequest(
 async function findList(listId: string) {
   const prisma = new PrismaClient();
 
-  const list = prisma.sharedlists
+  const list = prisma.list
     .findUnique({
       where: {
-        id: listId,
+        url: listId,
       },
     })
     .catch(async (e) => {
