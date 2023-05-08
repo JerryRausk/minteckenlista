@@ -1,5 +1,6 @@
 import SignList from "@/models/SharedList";
 import Sign, { SignWithMeta } from "@/models/Sign";
+import ApiService from "@/services/apiService";
 import SignService from "@/services/signService";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -174,8 +175,18 @@ export const useSignStore = defineStore("signStore", () => {
       s.selected = !s.selected;
       if (s.selected) {
         // localStorageService.insertIndexDb(word);
+        ApiService.PostNewListEvent({
+          event: "addWord",
+          listUrl: currentList.value.Url,
+          word: s.word,
+        });
       } else {
         // localStorageService.deleteIndexDb(word);
+        ApiService.PostNewListEvent({
+          event: "removeWord",
+          listUrl: currentList.value.Url,
+          word: s.word,
+        });
       }
     }
   }

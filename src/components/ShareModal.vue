@@ -5,12 +5,8 @@
         <button
           type="button"
           class="btn btn-success"
-          v-if="store.currentList.Url === 'local'"
-          @click="ApiService.CreateNewSharedListThenActivate()"
+          @click="handleCreateNewList()"
         >
-          Skapa ny delad lista
-        </button>
-        <button type="button" class="btn btn-success">
           Skapa ny tom delad lista
         </button>
         <button
@@ -27,12 +23,15 @@
 
 <script setup lang="ts">
 import ApiService from "@/services/apiService";
-import { useSignStore } from "@/stores/signStore";
+import { List } from "@prisma/client";
 
 const emit = defineEmits<{
   (e: "closeModal"): void;
 }>();
-const store = useSignStore();
+const handleCreateNewList = async () => {
+  const list: List = await ApiService.CreateNewSharedList();
+  window.location.href = `/?list=${list.url}`;
+};
 </script>
 
 <style scoped>

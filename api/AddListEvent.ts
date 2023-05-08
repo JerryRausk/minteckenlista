@@ -60,7 +60,7 @@ class ValidatedRequestBody {
       "listUrl" in json &&
       "word" in json &&
       "event" in json &&
-      json["event"] in Event
+      json["event"] in Events
     ) {
       return new ValidatedRequestBody(
         json["listUrl"],
