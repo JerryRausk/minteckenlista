@@ -51,7 +51,7 @@ export const useSignStore = defineStore("signStore", () => {
 
   const paginationRange = computed<Array<number>>(() => {
     return [
-      currentPaginationStart.value,
+      currentPaginationStart.value + 1,
       Math.min(
         currentPaginationStart.value + itemsPerPagination,
         filteredSigns.value.length
@@ -80,7 +80,7 @@ export const useSignStore = defineStore("signStore", () => {
   const currentPaginationIsLast = computed<Boolean>(() => {
     return (
       currentPaginationStart.value + itemsPerPagination >
-      filteredSigns.value.length
+      filteredSigns.value.length - 1
     );
   });
 
@@ -122,7 +122,7 @@ export const useSignStore = defineStore("signStore", () => {
 
   function toggleFilterSaved() {
     filterSaved.value = !filterSaved.value;
-    currentPaginationStart.value = 0;
+    resetPaginationStart();
   }
 
   function nextPaginationPage() {
