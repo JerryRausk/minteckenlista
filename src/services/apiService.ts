@@ -1,6 +1,6 @@
 import SignList from "@/models/SharedList";
 import { useSignStore } from "@/stores/signStore";
-import { Events, List, ListEvent } from "@prisma/client";
+import type { List } from "@prisma/client";
 
 export default class ApiService {
   static async CreateNewSharedListThenActivate(): Promise<void> {
@@ -34,10 +34,10 @@ export default class ApiService {
     store.resetSaved();
     for (const event of events) {
       const word = event.eventData;
-      if (event.event === Events.addWord) {
+      if (event.event === "addWord") {
         store.setSaved(word);
       }
-      if (event.event === Events.removeWord) {
+      if (event.event === "removeWord") {
         store.unsetSaved(word);
       }
     }
