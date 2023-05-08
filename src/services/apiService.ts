@@ -1,6 +1,6 @@
 import SignList from "@/models/SharedList";
 import { useSignStore } from "@/stores/signStore";
-import type { List } from "@prisma/client";
+import type { List, ListEvent } from "@prisma/client";
 
 export default class ApiService {
   static async CreateNewSharedListThenActivate(): Promise<void> {
