@@ -69,6 +69,7 @@ export default class ApiService {
       new WordList(list.id, list.url, list.created, list.publicName)
     );
     store.resetSaved();
+    store.filterSaved = true;
     for (const event of events) {
       const word = event.eventData;
       if (event.event === "addWord") {
