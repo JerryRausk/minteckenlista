@@ -183,14 +183,14 @@ export const useWordStore = defineStore("wordStore", () => {
         ApiService.PostNewListEvent({
           event: "addWord",
           listUrl: currentList.value.Url,
-          word: foundWord.word,
+          data: foundWord.word,
         });
       } else {
         // localStorageService.deleteIndexDb(word);
         ApiService.PostNewListEvent({
           event: "removeWord",
           listUrl: currentList.value.Url,
-          word: foundWord.word,
+          data: foundWord.word,
         });
       }
     }
@@ -198,6 +198,13 @@ export const useWordStore = defineStore("wordStore", () => {
 
   function setCurrentList(list: WordList) {
     currentList.value = list;
+  }
+
+  async function setListName(name: string) {
+    const res = await ApiService.UpdateListName(currentList.value.Url, name);
+    if (res) {
+      currentList.value.PublicName = res;
+    }
   }
 
   return {
@@ -225,5 +232,6 @@ export const useWordStore = defineStore("wordStore", () => {
     unsetSaved,
     resetSaved,
     setWordVariantsToWord,
+    setListName,
   };
 });

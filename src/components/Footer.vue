@@ -3,6 +3,14 @@
     <Transition name="modal">
       <ShareModal v-if="shareModalOpen" @close-modal="shareModalOpen = false" />
     </Transition>
+    <Transition name="modal">
+      <ChangeListNameModal
+        :current-name="store.currentList.PublicName ?? ''"
+        v-if="changeListNameModalOpen"
+        @close-modal="changeListNameModalOpen = false"
+        @confirmed="(e) => store.setListName(e)"
+      />
+    </Transition>
   </Teleport>
   <div class="footer d-flex flex-row">
     <div class="footer-item-group d-flex flex-row">
@@ -14,8 +22,17 @@
     </div>
     <div class="credits">
       <h6 v-if="store.currentList.Url === 'local'">Lokal lista (Offline)</h6>
+      <h6 v-else-if="!store.currentList.PublicName">
+        Sparad lista
+        <span class="edit-icon" @click="changeListNameModalOpen = true"
+          >&#9998;</span
+        >
+      </h6>
       <h6 v-else>
-        {{ store.currentList.PublicName ?? store.currentList.Url }}
+        {{ store.currentList.PublicName }}
+        <span class="edit-icon" @click="changeListNameModalOpen = true"
+          >&#9998;</span
+        >
       </h6>
       <a href="https://teckensprakslexikon.su.se/" target="_blank"
         >Material från Teckenspråkslexikon</a
@@ -27,6 +44,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import ChangeListNameModal from "@/components/ChangeListNameModal.vue";
 import FooterItem from "@/components/FooterItem.vue";
 import ShareModal from "@/components/ShareModal.vue";
 import { useWordStore } from "@/stores/wordStore";
@@ -35,6 +53,7 @@ const store = useWordStore();
 
 const savedIcon = computed<string>(() => (store.filterSaved ? "❤️" : "🤍"));
 const shareModalOpen = ref<boolean>(false);
+const changeListNameModalOpen = ref<boolean>(false);
 
 function handleSavedClicked(): void {
   store.toggleFilterSaved();
@@ -58,5 +77,11 @@ function handleSavedClicked(): void {
   font-size: 0.75em;
   margin-top: 4px;
   text-align: center;
+}
+
+.edit-icon {
+  display: inline-block;
+  transform: rotateZ(90deg);
+  cursor: pointer;
 }
 </style>

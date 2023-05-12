@@ -2,19 +2,20 @@
   <div class="modal-mask">
     <div class="modal-wrapper" @click.self="emit('closeModal')">
       <div class="modal-container">
+        <input
+          ref="nameInput"
+          v-model="name"
+          @keyup.esc="emit('closeModal')"
+          @keyup.enter="emit('confirmed', name), emit('closeModal')"
+          type="text"
+          placeholder="Ge din lista ett namn"
+        />
         <button
           type="button"
           class="btn btn-success"
-          @click="handleCreateNewList()"
+          @click="emit('confirmed', name), emit('closeModal')"
         >
-          Skapa ny tom delad lista
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="emit('closeModal')"
-        >
-          Stäng
+          Spara
         </button>
       </div>
     </div>
@@ -22,16 +23,20 @@
 </template>
 
 <script setup lang="ts">
-import ApiService from "@/services/apiService";
-import { List } from "@prisma/client";
-
+import { onMounted, ref } from "vue";
 const emit = defineEmits<{
   (e: "closeModal"): void;
+  (e: "confirmed", newName: string): void;
 }>();
-const handleCreateNewList = async () => {
-  const list: List = await ApiService.CreateNewSharedList();
-  window.location.href = `/?list=${list.url}`;
-};
+const props = defineProps<{
+  currentName: string;
+}>();
+const name = ref<string>("");
+const nameInput = ref<HTMLInputElement | null>(null);
+onMounted(() => {
+  name.value = props.currentName;
+  nameInput.value?.focus();
+});
 </script>
 
 <style scoped>
@@ -52,7 +57,7 @@ const handleCreateNewList = async () => {
 }
 
 .modal-container {
-  width: 300px;
+  width: fit-content;
   margin: 0px auto;
   padding: 2rem 2rem;
   background-color: #fff;
@@ -61,7 +66,7 @@ const handleCreateNewList = async () => {
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1rem;
 }
 </style>

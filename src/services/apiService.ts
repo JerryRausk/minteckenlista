@@ -9,7 +9,7 @@ import type {
 
 interface listEventDto {
   event: string;
-  word: string;
+  data: string;
   listUrl: string;
 }
 
@@ -59,6 +59,24 @@ export default class ApiService {
     );
   }
 
+  static async UpdateListName(
+    listUrl: string,
+    name: string
+  ): Promise<string | null> {
+    const response = await fetch("api/UpdateListName", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ listUrl: listUrl, listName: name }),
+    });
+    if (response.status !== 200) {
+      console.error("Couldnt update list name.", response.body);
+      return null;
+    }
+    return response.json().then((j) => j.listName);
+  }
+
   private static async SetActiveListAndProcessEventsToStore(
     list: List,
     events: ListEvent[]
@@ -72,11 +90,16 @@ export default class ApiService {
     store.filterSaved = true;
     for (const event of events) {
       const word = event.eventData;
-      if (event.event === "addWord") {
-        store.setSaved(word);
-      }
-      if (event.event === "removeWord") {
-        store.unsetSaved(word);
+      switch (event.event) {
+        case "addWord":
+          store.setSaved(word);
+          break;
+        case "removeWord":
+          store.unsetSaved(word);
+          break;
+        default:
+          console.error(`Unrecognized event ${event}`);
+          break;
       }
     }
   }
