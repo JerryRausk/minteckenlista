@@ -29,9 +29,9 @@
 <script setup lang="ts">
 import FooterItem from "@/components/FooterItem.vue";
 import ShareModal from "@/components/ShareModal.vue";
-import { useSignStore } from "@/stores/signStore";
+import { useWordStore } from "@/stores/wordStore";
 import { computed, ref } from "vue";
-const store = useSignStore();
+const store = useWordStore();
 
 const savedIcon = computed<string>(() => (store.filterSaved ? "❤️" : "🤍"));
 const shareModalOpen = ref<boolean>(false);

@@ -1,20 +1,20 @@
 <template>
   <video
-    :src="'https://teckensprakslexikon.su.se' + sign.videoUrlSuffix"
+    :src="'https://teckensprakslexikon.su.se' + variant.videoUrlSuffix"
     muted
     playsinline
     autoplay
     type="video/mp4"
     preload="metadata"
     loop
-    :id="sign.id.toString()"
+    :id="variant.id.toString()"
     @click="handleVideoClicked"
   ></video>
 </template>
 <script setup lang="ts">
-import Sign from "@/models/Sign";
+import { WordVariant } from "@/models/Word";
 defineProps<{
-  sign: Sign;
+  variant: WordVariant;
 }>();
 
 function handleVideoClicked(e: Event) {

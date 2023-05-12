@@ -1,6 +1,11 @@
-import SignList from "@/models/SharedList";
-import { useSignStore } from "@/stores/signStore";
-import type { List, ListEvent } from "@prisma/client";
+import WordList from "@/models/SharedList";
+import { WordVariant } from "@/models/Word";
+import { useWordStore } from "@/stores/wordStore";
+import type {
+  List,
+  ListEvent,
+  WordVariant as WordVariantDto,
+} from "@prisma/client";
 
 interface listEventDto {
   event: string;
@@ -36,14 +41,32 @@ export default class ApiService {
     });
   }
 
+  static async GetWordVariants(wordId: number): Promise<WordVariant[]> {
+    const response = await fetch(`api/GetVariants/${wordId}`);
+    if (response.status !== 200) {
+      console.error(`Could not fetch variants for word with id ${wordId}`);
+      return [];
+    }
+    const variants: WordVariantDto[] = await response.json();
+    return variants.map(
+      (dto) =>
+        new WordVariant(
+          dto.id,
+          dto.description,
+          dto.urlSuffix,
+          dto.videoUrlSuffix
+        )
+    );
+  }
+
   private static async SetActiveListAndProcessEventsToStore(
     list: List,
     events: ListEvent[]
   ) {
     events.sort((a, b) => a.id - b.id);
-    const store = useSignStore();
+    const store = useWordStore();
     store.setCurrentList(
-      new SignList(list.id, list.url, list.created, list.publicName)
+      new WordList(list.id, list.url, list.created, list.publicName)
     );
     store.resetSaved();
     for (const event of events) {

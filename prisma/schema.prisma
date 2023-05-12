@@ -6,14 +6,18 @@ datasource db {
   provider = "mysql"
   url = env("DATABASE_URL")
   relationMode = "prisma"
+  
 }
-
+// !!!
+// Dont forget to manually add charset utf8mb4 and collation utf8mb4_sv_0900_as_cs
+// alter table TableName convert to character set utf8mb4 collate utf8mb4_sv_0900_as_cs;
+// !!!
 model List {
-  id         Int      @id @default(autoincrement())
-  url        String   @unique @default(uuid())
-  publicName String?  @unique
-  created    DateTime @default(now())
-  updated    DateTime @default(now())
+  id         Int          @id @default(autoincrement())
+  url        String       @unique @default(uuid())
+  publicName String?      @unique
+  created    DateTime     @default(now())
+  updated    DateTime     @default(now())
   listItems  ListItem[]
   listEvents ListEvent[]
 
@@ -31,14 +35,32 @@ model ListItem {
 }
 
 model ListEvent {
-  id        Int     @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   event     Events
-  eventData String  @db.VarChar(128)
+  eventData String    @db.VarChar(128)
   listId    Int
-  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
-  eventDate DateTime @default(now())
+  list      List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  eventDate DateTime  @default(now())
 
   @@index([listId])
+}
+
+model Word {
+  id            Int           @id
+  word          String        @unique
+  category      String
+  wordVariants  WordVariant[]
+}
+
+model WordVariant {
+  id              Int     @id
+  wordId          Int
+  word            Word    @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  description     String  @db.VarChar(2048)
+  urlSuffix       String  @db.VarChar(128)
+  videoUrlSuffix  String  @db.VarChar(256)
+
+  @@index([wordId])
 }
 
 enum Events {

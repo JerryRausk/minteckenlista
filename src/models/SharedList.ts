@@ -1,4 +1,4 @@
-export default class SignList {
+export default class WordList {
   Id: number;
   Url: string;
   Created: Date;

@@ -1,41 +1,41 @@
 <template>
-  <div class="container flex-column sign-list no-touch-strangeness">
+  <div class="container flex-column word-list no-touch-strangeness">
     <div class="flex-row justify-content-between align-items-end">
       <Search />
       <Picklist />
     </div>
 
     <ul class="list-group">
-      <Loader class="loader" v-if="!store.signsInitialized" />
-      <SignListItem
-        v-for="sign in store.getPaginatedSigns()"
-        :key="sign.word"
-        :sign="sign"
+      <Loader class="loader" v-if="!store.wordsInitialized" />
+      <WordListItem
+        v-for="word in store.getPaginatedWords()"
+        :key="word.word"
+        :word="word"
         @save-toggled="(w: string) => store.toggleSaved(w)"
-      ></SignListItem>
+      ></WordListItem>
     </ul>
-    <SignListPagination v-if="store.signsInitialized" />
+    <WordListPagination v-if="store.wordsInitialized" />
   </div>
 </template>
 
 <script setup lang="ts">
 import Loader from "@/components/IsLoading.vue";
+import Picklist from "@/components/Picklist.vue";
 import Search from "@/components/Search.vue";
-import SignListItem from "@/components/SignListItem.vue";
-import { useSignStore } from "@/stores/signStore";
+import WordListItem from "@/components/WordListItem.vue";
+import WordListPagination from "@/components/WordListPagination.vue";
+import { useWordStore } from "@/stores/wordStore";
 import { onMounted } from "vue";
-import Picklist from "./Picklist.vue";
-import SignListPagination from "./SignListPagination.vue";
 
-const store = useSignStore();
+const store = useWordStore();
 
 onMounted(async () => {
-  await store.initializeSigns();
+  await store.initializeWords();
 });
 </script>
 
 <style scoped>
-.sign-list {
+.word-list {
   margin: auto;
   width: 95%;
   max-width: 32em;

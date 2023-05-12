@@ -6,56 +6,63 @@
     >
       <div class="ms-2 me-auto flex-column">
         <div class="fw-bold">
-          {{ StringHelper.CapitalizeFirst(sign.word) }}
+          {{ StringHelper.CapitalizeFirst(word.word) }}
         </div>
       </div>
 
       <div class="saved-icon-container" @click="emitSaveToggled">
-        <span v-if="sign.selected">❤️</span>
+        <span v-if="word.saved">❤️</span>
         <span v-else>🤍</span>
       </div>
     </div>
     <div class="list-item-body" v-if="open">
       <hr />
-      <ul v-if="sign.signs.length > 1" class="variant-list d-flex flex-row">
+      <ul v-if="word.variants.length > 1" class="variant-list d-flex flex-row">
         <li
-          v-for="(_, index) in sign.signs"
+          v-for="(_, index) in word.variants"
           class="variant-list-item"
-          :class="{ 'variant-list-item-active': index === activeVariant }"
+          :class="{ 'variant-list-item-active': index === activeVariantIndex }"
         >
-          <span @click="activeVariant = index">Variant {{ index + 1 }}</span>
+          <span @click="activeVariantIndex = index"
+            >Variant {{ index + 1 }}</span
+          >
         </li>
       </ul>
-      <Video :sign="sign.signs[activeVariant]"
+      <Video :variant="word.variants[activeVariantIndex]"
         >Din webläsare stödjer tyvärr inte video</Video
       >
-      {{ sign.signs[activeVariant].description }}
+      {{ word.variants[activeVariantIndex].description }}
     </div>
   </li>
 </template>
 <script setup lang="ts">
-import Video from "@/components/SignListItemVideo.vue";
+import Video from "@/components/WordListItemVideo.vue";
 import StringHelper from "@/helpers/stringHelper";
-import { SignWithMeta } from "@/models/Sign";
+import Word from "@/models/Word";
+import { useWordStore } from "@/stores/wordStore";
 import { ref } from "vue";
 const props = defineProps<{
-  sign: SignWithMeta;
+  word: Word;
 }>();
 
 const emit = defineEmits<{
   (e: "save-toggled", word: string): void;
 }>();
 
+const store = useWordStore();
 const open = ref<Boolean>(false);
-const activeVariant = ref<number>(0);
+const activeVariantIndex = ref<number>(0);
 
-function toggleOpen() {
+async function toggleOpen() {
+  if (props.word.variants.length === 0) {
+    await store.setWordVariantsToWord(props.word.id);
+  }
   open.value = !open.value;
 }
 
 function emitSaveToggled(e: Event) {
   e.stopPropagation();
-  emit("save-toggled", props.sign.word);
+  emit("save-toggled", props.word.word);
 }
 </script>
 <style scoped>
