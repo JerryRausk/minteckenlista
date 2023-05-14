@@ -3,7 +3,7 @@
     type="text"
     placeholder="Sök..."
     aria-label="Sök"
-    class="form-control search-input"
+    class="form-control"
     v-model="store.filterString"
   />
 </template>

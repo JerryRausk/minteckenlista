@@ -2,6 +2,18 @@
   <div class="modal-mask">
     <div class="modal-wrapper" @click.self="emit('closeModal')">
       <div class="modal-container">
+        <div
+          v-if="store.currentList.Url !== 'local'"
+          class="display-saved-list-url dflex flex-row justify-content-between align-items-center"
+        >
+          <input class="form-control" type="text" :value="currentLocation" />
+          <font-awesome-icon
+            icon="fa-regular fa-copy"
+            class="icon"
+            @click="handleCopyUrl()"
+          />
+        </div>
+
         <button
           type="button"
           class="btn btn-success"
@@ -23,7 +35,7 @@
 
 <script setup lang="ts">
 import { useWordStore } from "@/stores/wordStore";
-
+import { computed } from "vue";
 const store = useWordStore();
 const emit = defineEmits<{
   (e: "closeModal"): void;
@@ -31,6 +43,13 @@ const emit = defineEmits<{
 const handleCreateNewList = async () => {
   store.createAndSetNewList();
   emit("closeModal");
+};
+const currentLocation = computed<string>(() => {
+  return window.location.href;
+});
+
+const handleCopyUrl = () => {
+  navigator.clipboard.writeText(currentLocation.value);
 };
 </script>
 
@@ -63,5 +82,13 @@ const handleCreateNewList = async () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.display-saved-list-url {
+  gap: 16px;
+}
+.icon {
+  font-size: 1.3rem;
+  cursor: pointer;
 }
 </style>
