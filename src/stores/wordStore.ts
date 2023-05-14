@@ -16,6 +16,8 @@ export const useWordStore = defineStore("wordStore", () => {
   const currentPaginatedWordsCount = ref<number>(ItemsPerScreenHeight);
   const currentList = ref<WordList>(new WordList(0, "local", undefined, null));
   const wordsInitialized = ref<Boolean>(false);
+  const loadingReasons = ref<string[]>([]);
+  const isLoading = computed<Boolean>(() => loadingReasons.value.length > 0);
   /*const localStorageService = new LocalStorageService(
     "savedSigns",
     "savedSigns",
@@ -105,10 +107,6 @@ export const useWordStore = defineStore("wordStore", () => {
     return currentPaginatedWordsCount.value >= filteredWords.value.length;
   });
 
-  function getWordsFromRange(start: number, end: number) {
-    return words.value.slice(start, end);
-  }
-
   function getPaginatedWords(): Word[] {
     return filteredWords.value.slice(0, currentPaginatedWordsCount.value);
   }
@@ -181,13 +179,14 @@ export const useWordStore = defineStore("wordStore", () => {
   async function toggleSaved(word: string) {
     const foundWord = words.value.find((w) => w.word === word);
     if (foundWord) {
-      foundWord.saved = !foundWord.saved;
       if (foundWord.saved) {
         // localStorageService.insertIndexDb(word);
         ApiService.PostNewListEvent({
           event: "addWord",
           listUrl: currentList.value.Url,
           data: foundWord.word,
+        }).then(() => {
+          foundWord.saved = !foundWord.saved;
         });
       } else {
         // localStorageService.deleteIndexDb(word);
@@ -195,6 +194,8 @@ export const useWordStore = defineStore("wordStore", () => {
           event: "removeWord",
           listUrl: currentList.value.Url,
           data: foundWord.word,
+        }).then(() => {
+          foundWord.saved = !foundWord.saved;
         });
       }
     }
@@ -218,6 +219,8 @@ export const useWordStore = defineStore("wordStore", () => {
   }
 
   async function activateList(listUrl: string) {
+    const loadingMsg = "Lista hämtas...";
+    loadingReasons.value.push(loadingMsg);
     resetSaved();
     filterSaved.value = true;
     const listFetch = ApiService.GetList(listUrl);
@@ -247,6 +250,7 @@ export const useWordStore = defineStore("wordStore", () => {
         }
       }
     }
+    loadingReasons.value = loadingReasons.value.filter((s) => s !== loadingMsg);
   }
   return {
     wordsInitialized,
@@ -274,5 +278,6 @@ export const useWordStore = defineStore("wordStore", () => {
     increasePagination,
     allFilteredWordsArePaginated,
     activateList,
+    isLoading,
   };
 });

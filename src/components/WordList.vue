@@ -1,5 +1,8 @@
 <template>
-  <div class="container flex-column word-list no-touch-strangeness">
+  <div
+    class="container flex-column word-list no-touch-strangeness"
+    v-if="!store.isLoading"
+  >
     <div class="flex-row justify-content-between align-items-end">
       <Search class="search-input" />
       <Picklist class="categories-dropdown" />
@@ -18,10 +21,14 @@
     </ul>
     <WordListPagination v-if="store.wordsInitialized" />
   </div>
+  <IsLoading v-else />
 </template>
 
 <script setup lang="ts">
-import Loader from "@/components/IsLoading.vue";
+import {
+  default as IsLoading,
+  default as Loader,
+} from "@/components/IsLoading.vue";
 import Picklist from "@/components/Picklist.vue";
 import Search from "@/components/Search.vue";
 import WordListItem from "@/components/WordListItem.vue";

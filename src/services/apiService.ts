@@ -1,6 +1,5 @@
 import WordList from "@/models/SharedList";
 import { WordVariant } from "@/models/Word";
-import { useWordStore } from "@/stores/wordStore";
 import type {
   List,
   ListEvent,
@@ -39,7 +38,7 @@ export default class ApiService {
   }
 
   static async PostNewListEvent(listEvent: listEventDto) {
-    fetch("/api/AddListEvent", {
+    await fetch("/api/AddListEvent", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,32 +81,5 @@ export default class ApiService {
       return null;
     }
     return response.json().then((j) => j.listName);
-  }
-
-  private static async SetActiveListAndProcessEventsToStore(
-    list: List,
-    events: ListEvent[]
-  ) {
-    events.sort((a, b) => a.id - b.id);
-    const store = useWordStore();
-    store.setCurrentList(
-      new WordList(list.id, list.url, list.created, list.publicName)
-    );
-    store.resetSaved();
-    store.filterSaved = true;
-    for (const event of events) {
-      const word = event.eventData;
-      switch (event.event) {
-        case "addWord":
-          store.setSaved(word);
-          break;
-        case "removeWord":
-          store.unsetSaved(word);
-          break;
-        default:
-          console.error(`Unrecognized event ${event}`);
-          break;
-      }
-    }
   }
 }

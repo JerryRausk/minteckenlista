@@ -12,6 +12,7 @@
       />
     </Transition>
   </Teleport>
+
   <div class="footer d-flex flex-row">
     <div class="footer-item-group d-flex flex-row">
       <FooterItem

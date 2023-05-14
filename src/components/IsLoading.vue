@@ -18,16 +18,16 @@
   position: absolute;
   left: 8px;
   width: 16px;
-  background: #fff;
-  animation: loader 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  background: #484646;
+  animation: loader 0.9s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
 .loader div:nth-child(1) {
   left: 8px;
-  animation-delay: -0.24s;
+  animation-delay: -0.2s;
 }
 .loader div:nth-child(2) {
   left: 32px;
-  animation-delay: -0.12s;
+  animation-delay: -0.1s;
 }
 .loader div:nth-child(3) {
   left: 56px;

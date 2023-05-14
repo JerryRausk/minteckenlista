@@ -11,8 +11,9 @@
       </div>
 
       <div class="saved-icon-container" @click="emitSaveToggled">
-        <span v-if="word.saved">❤️</span>
-        <span v-else>🤍</span>
+        <Transition name="bounce" mode="out-in"
+          ><span v-if="word.saved">❤️</span><span v-else>🤍</span></Transition
+        >
       </div>
     </div>
     <div class="list-item-body" v-if="open">
@@ -91,5 +92,22 @@ function emitSaveToggled(e: Event) {
 }
 hr {
   margin: 1rem 0 0 0;
+}
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
