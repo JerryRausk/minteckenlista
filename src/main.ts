@@ -6,13 +6,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import App from "./App.vue";
-import ApiService from "./services/apiService";
-
+import { useWordStore } from "./stores/wordStore";
 library.add(faCopy);
 
 const pinia = createPinia();
 const app = createApp(App);
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(pinia);
+app.mount("#app");
 
 /* If queryParam list was provided init that list */
 const uri = window.location.href.split("?");
@@ -21,10 +22,8 @@ if (uri.length === 2) {
   for (const param of params) {
     const kv = param.split("=");
     if (kv[0].toLowerCase() === "list") {
-      ApiService.GetAndActivateSharedList(kv[1]);
+      const store = useWordStore();
+      store.activateList(kv[1]);
     }
   }
 }
-
-app.use(pinia);
-app.mount("#app");

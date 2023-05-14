@@ -9,14 +9,16 @@ export default async function handleRequest(
     return response.status(400).end();
   }
   const prisma = new PrismaClient();
-  const listId = request.query["listId"];
-  if (typeof listId !== "string") {
-    return response.status(400).send("listId needs to be a single string.");
+  const listUrl = request.query["listUrl"];
+  if (typeof listUrl !== "string") {
+    return response.status(400).send("listUrl needs to be a single string.");
   }
   await prisma.listEvent
     .findMany({
       where: {
-        listId: Number(listId),
+        list: {
+          url: listUrl,
+        },
       },
     })
     .then((l) => {
@@ -26,6 +28,6 @@ export default async function handleRequest(
     .catch((e) => {
       prisma.$disconnect;
       console.error(e);
-      return response.status(500).send(`Coldn't create list.`);
+      return response.status(500).send(`Coldn't fetch events.`);
     });
 }

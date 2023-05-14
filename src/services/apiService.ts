@@ -20,15 +20,22 @@ export default class ApiService {
     return new WordList(list.id, list.url, list.created, list.publicName);
   }
 
-  static async GetAndActivateSharedList(listurl: string): Promise<void> {
-    const listResponse = await fetch(`api/GetList/${listurl}`);
-    if (listResponse.status !== 200) {
-      return;
+  static async GetList(listurl: string): Promise<List | null> {
+    const response = await fetch(`api/GetList/${listurl}`);
+    if (response.status !== 200) {
+      return null;
     }
-    const list: List = await listResponse.json();
-    const eventsResponse = await fetch(`api/GetEvents?listId=${list.id}`);
-    const events: ListEvent[] = await eventsResponse.json();
-    this.SetActiveListAndProcessEventsToStore(list, events);
+    const list: List = await response.json();
+    return list;
+  }
+
+  static async GetListEvents(listurl: string): Promise<ListEvent[] | null> {
+    const response = await fetch(`api/GetEvents?listUrl=${listurl}`);
+    if (response.status !== 200) {
+      return null;
+    }
+    const events: ListEvent[] = await response.json();
+    return await events;
   }
 
   static async PostNewListEvent(listEvent: listEventDto) {

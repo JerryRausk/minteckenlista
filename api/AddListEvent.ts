@@ -30,7 +30,7 @@ export default async function handleRequest(
     .create({
       data: {
         event: validReqBody.Event,
-        eventData: validReqBody.Word,
+        eventData: validReqBody.Data,
         listId: list.id,
       },
     })
@@ -43,28 +43,28 @@ export default async function handleRequest(
     .catch((e) => {
       prisma.$disconnect;
       console.error(e);
-      return response.status(500).send(`Coldn't add word to list.`);
+      return response.status(500).send(`Coldn't add event.`);
     });
 }
 
 class ValidatedRequestBody {
   ListURL: string;
-  Word: string;
+  Data: string;
   Event: Events;
-  constructor(listUrl: string, word: string, event: Events) {
-    (this.ListURL = listUrl), (this.Word = word), (this.Event = event);
+  constructor(listUrl: string, data: string, event: Events) {
+    (this.ListURL = listUrl), (this.Data = data), (this.Event = event);
   }
 
   public static fromJson(json: Record<string, any>) {
     if (
       "listUrl" in json &&
-      "word" in json &&
+      "data" in json &&
       "event" in json &&
       json["event"] in Events
     ) {
       return new ValidatedRequestBody(
         json["listUrl"],
-        json["word"],
+        json["data"],
         json["event"]
       );
     }

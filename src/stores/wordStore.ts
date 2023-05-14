@@ -216,6 +216,38 @@ export const useWordStore = defineStore("wordStore", () => {
     const newList = await ApiService.CreateNewSharedList();
     setCurrentList(newList);
   }
+
+  async function activateList(listUrl: string) {
+    resetSaved();
+    filterSaved.value = true;
+    const listFetch = ApiService.GetList(listUrl);
+    const eventsFetch = ApiService.GetListEvents(listUrl);
+
+    const [list, events] = await Promise.all([listFetch, eventsFetch]);
+    if (list && events) {
+      currentList.value = new WordList(
+        list.id,
+        list.url,
+        list.created,
+        list.publicName
+      );
+      events.sort((a, b) => a.id - b.id);
+      for (const event of events) {
+        const word = event.eventData;
+        switch (event.event) {
+          case "addWord":
+            setSaved(word);
+            break;
+          case "removeWord":
+            unsetSaved(word);
+            break;
+          default:
+            console.error(`Unrecognized event ${event}`);
+            break;
+        }
+      }
+    }
+  }
   return {
     wordsInitialized,
     currentPaginationStart,
@@ -228,7 +260,6 @@ export const useWordStore = defineStore("wordStore", () => {
     paginationRange,
     filteredWordsCount,
     filterString,
-    getWordsFromRange,
     getPaginatedWords,
     initializeWords,
     toggleFilterSaved,
@@ -242,5 +273,6 @@ export const useWordStore = defineStore("wordStore", () => {
     createAndSetNewList,
     increasePagination,
     allFilteredWordsArePaginated,
+    activateList,
   };
 });

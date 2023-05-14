@@ -66,5 +66,5 @@ model WordVariant {
 enum Events {
   addWord
   removeWord
-  changePublicName
+  setNote
 }
