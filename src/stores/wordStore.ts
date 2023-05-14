@@ -179,14 +179,13 @@ export const useWordStore = defineStore("wordStore", () => {
   async function toggleSaved(word: string) {
     const foundWord = words.value.find((w) => w.word === word);
     if (foundWord) {
+      foundWord.saved = !foundWord.saved;
       if (foundWord.saved) {
         // localStorageService.insertIndexDb(word);
         ApiService.PostNewListEvent({
           event: "addWord",
           listUrl: currentList.value.Url,
           data: foundWord.word,
-        }).then(() => {
-          foundWord.saved = !foundWord.saved;
         });
       } else {
         // localStorageService.deleteIndexDb(word);
@@ -194,8 +193,6 @@ export const useWordStore = defineStore("wordStore", () => {
           event: "removeWord",
           listUrl: currentList.value.Url,
           data: foundWord.word,
-        }).then(() => {
-          foundWord.saved = !foundWord.saved;
         });
       }
     }
