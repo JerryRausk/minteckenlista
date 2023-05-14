@@ -45,7 +45,7 @@ const handleCreateNewList = async () => {
   emit("closeModal");
 };
 const currentLocation = computed<string>(() => {
-  return `https://www.minteckenlista.se/?list=${store.currentList.Url}`;
+  return `https://minteckenlista.se/?list=${store.currentList.Url}`;
 });
 
 const handleCopyUrl = () => {
