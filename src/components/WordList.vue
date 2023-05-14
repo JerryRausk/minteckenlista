@@ -1,18 +1,20 @@
 <template>
   <div class="container flex-column word-list no-touch-strangeness">
     <div class="flex-row justify-content-between align-items-end">
-      <Search />
-      <Picklist />
+      <Search class="search-input" />
+      <Picklist class="categories-dropdown" />
     </div>
 
     <ul class="list-group">
       <Loader class="loader" v-if="!store.wordsInitialized" />
       <WordListItem
+        v-if="store.filteredWordsCount > 0"
         v-for="word in store.getPaginatedWords()"
         :key="word.word"
         :word="word"
         @save-toggled="(w: string) => store.toggleSaved(w)"
       ></WordListItem>
+      <div v-else class="nothing-to-display">{{ noWordsFoundReason() }}</div>
     </ul>
     <WordListPagination v-if="store.wordsInitialized" />
   </div>
@@ -32,6 +34,14 @@ const store = useWordStore();
 onMounted(async () => {
   await store.initializeWords();
 });
+
+const noWordsFoundReason = (): string => {
+  if (store.filterString !== "") {
+    return `Inga ord som innehåller "${store.filterString}" hittades`;
+  } else {
+    return "Annan anledning";
+  }
+};
 </script>
 
 <style scoped>
@@ -66,5 +76,16 @@ onMounted(async () => {
   border: 1px solid #ced4da;
   background-color: white;
   border-radius: 4px;
+}
+.search-input {
+  width: 40%;
+}
+
+.categories-dropdown {
+  width: 40%;
+}
+
+.nothing-to-display {
+  align-items: center;
 }
 </style>

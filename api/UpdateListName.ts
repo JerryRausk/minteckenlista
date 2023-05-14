@@ -30,7 +30,7 @@ export default async function handleRequest(
       prisma.$disconnect;
       return response
         .status(200)
-        .send(JSON.stringify({ listName: validReqBody.ListName }));
+        .send(JSON.stringify({ listName: li.publicName }));
     })
     .catch((e) => {
       prisma.$disconnect;

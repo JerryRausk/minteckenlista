@@ -1,25 +1,12 @@
 <template>
-  <div class="flex-row justify-content-between align-items-center">
+  <div class="flex-row justify-content-center align-items-center">
     <div>
-      <button
-        type="button"
-        class="pagination-button"
-        @click="store.previousPaginationPage()"
-        :class="{ hide: store.currentPaginationIsFirst }"
+      <span
+        class="paginate-next"
+        v-if="!store.allFilteredWordsArePaginated"
+        @click="store.increasePagination()"
+        >Ladda fler ord</span
       >
-        ⬅️
-      </button>
-    </div>
-    <div>{{ store.paginationRange[0] }} - {{ store.paginationRange[1] }}</div>
-    <div>
-      <button
-        type="button"
-        class="pagination-button"
-        @click="store.nextPaginationPage()"
-        :class="{ hide: store.currentPaginationIsLast }"
-      >
-        ➡️
-      </button>
     </div>
   </div>
 </template>
@@ -29,12 +16,13 @@ const store = useWordStore();
 </script>
 
 <style scoped>
-.pagination-button {
-  background-color: transparent;
-  border: none;
-  font-size: 1.5em;
-}
 .hide {
   visibility: hidden;
+}
+
+.paginate-next {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 }
 </style>

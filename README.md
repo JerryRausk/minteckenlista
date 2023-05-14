@@ -1,31 +1,27 @@
-# Vue Basic
+# Get started
 
-[Azure Static Web Apps](https://docs.microsoft.com/azure/static-web-apps/overview) allows you to easily build [Vue.js](https://vuejs.org/) apps in minutes. Use this repo with the [Vue quickstart](https://docs.microsoft.com/azure/static-web-apps/getting-started?tabs=vue) to build and customize a new static site.
+## Global Requirements
+Vercel CLI
+node
 
-## Project setup
 
-```bash
+## Get up and running with front and backend
+### Install dependencies
+``` bash
 npm install
 ```
-
-### Compiles and hot-reloads for development
-
-```bash
-npm run serve
+### Create .env file
+Create a .env file in the solution root, this will be used by prisma
+``` env
+DATABASE_URL='mysql://USERNAME:PASSWORD@aws.connect.psdb.cloud/minteckenlista?sslaccept=strict'
 ```
 
-### Compiles and minifies for production
-
-```bash
-npm run build
+### Start frontend and backend
+``` bash
+vercel dev
 ```
 
-### Lints and fixes files
-
-```bash
-npm run lint
+### Start frontend only 
+``` bash
+npm run dev¨
 ```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).

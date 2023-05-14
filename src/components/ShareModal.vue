@@ -22,15 +22,15 @@
 </template>
 
 <script setup lang="ts">
-import ApiService from "@/services/apiService";
-import { List } from "@prisma/client";
+import { useWordStore } from "@/stores/wordStore";
 
+const store = useWordStore();
 const emit = defineEmits<{
   (e: "closeModal"): void;
 }>();
 const handleCreateNewList = async () => {
-  const list: List = await ApiService.CreateNewSharedList();
-  window.location.href = `/?list=${list.url}`;
+  store.createAndSetNewList();
+  emit("closeModal");
 };
 </script>
 

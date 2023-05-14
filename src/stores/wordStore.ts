@@ -3,15 +3,17 @@ import Word from "@/models/Word";
 import ApiService from "@/services/apiService";
 import WordService from "@/services/wordService";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 export const useWordStore = defineStore("wordStore", () => {
-  const itemsPerPagination = 10;
+  const ItemsPerScreenHeight = window.screen.height / 85;
+  const itemsPerPagination = ItemsPerScreenHeight;
   const words = ref<Word[]>([]);
   const filterSaved = ref<Boolean>(false);
   const filterString = ref<string>("");
   const filterCateogry = ref<string>("");
   const currentPaginationStart = ref<number>(0);
+  const currentPaginatedWordsCount = ref<number>(ItemsPerScreenHeight);
   const currentList = ref<WordList>(new WordList(0, "local", undefined, null));
   const wordsInitialized = ref<Boolean>(false);
   /*const localStorageService = new LocalStorageService(
@@ -20,6 +22,21 @@ export const useWordStore = defineStore("wordStore", () => {
     "savedSigns",
     "word"
   );*/
+
+  watch(filterSaved, () => {
+    if (availableCategories.value.includes(filterCateogry.value)) {
+      filterCateogry.value = "";
+    }
+  });
+
+  watch(filterString, () => {
+    if (!availableCategories.value.includes(filterCateogry.value)) {
+      filterCateogry.value = "";
+    }
+    if (filteredWords.value.length === 0) {
+      filterSaved.value = false;
+    }
+  });
 
   const filteredWords = computed<Word[]>(() => {
     let _words = words.value.filter((w) =>
@@ -84,15 +101,16 @@ export const useWordStore = defineStore("wordStore", () => {
     );
   });
 
+  const allFilteredWordsArePaginated = computed<Boolean>(() => {
+    return currentPaginatedWordsCount.value >= filteredWords.value.length;
+  });
+
   function getWordsFromRange(start: number, end: number) {
     return words.value.slice(start, end);
   }
 
   function getPaginatedWords(): Word[] {
-    return filteredWords.value.slice(
-      currentPaginationStart.value,
-      currentPaginationStart.value + itemsPerPagination
-    );
+    return filteredWords.value.slice(0, currentPaginatedWordsCount.value);
   }
 
   async function initializeWords(): Promise<void> {
@@ -127,25 +145,11 @@ export const useWordStore = defineStore("wordStore", () => {
 
   function toggleFilterSaved() {
     filterSaved.value = !filterSaved.value;
-    resetPaginationStart();
+    currentPaginatedWordsCount.value = ItemsPerScreenHeight;
   }
 
-  function nextPaginationPage() {
-    currentPaginationStart.value = Math.min(
-      filteredWords.value.length,
-      currentPaginationStart.value + itemsPerPagination
-    );
-  }
-
-  function previousPaginationPage() {
-    currentPaginationStart.value = Math.max(
-      0,
-      currentPaginationStart.value - itemsPerPagination
-    );
-  }
-
-  function resetPaginationStart() {
-    currentPaginationStart.value = 0;
+  function increasePagination() {
+    currentPaginatedWordsCount.value += ItemsPerScreenHeight;
   }
 
   function resetSaved() {
@@ -207,6 +211,11 @@ export const useWordStore = defineStore("wordStore", () => {
     }
   }
 
+  async function createAndSetNewList() {
+    resetSaved();
+    const newList = await ApiService.CreateNewSharedList();
+    setCurrentList(newList);
+  }
   return {
     wordsInitialized,
     currentPaginationStart,
@@ -223,9 +232,6 @@ export const useWordStore = defineStore("wordStore", () => {
     getPaginatedWords,
     initializeWords,
     toggleFilterSaved,
-    nextPaginationPage,
-    previousPaginationPage,
-    resetPaginationStart,
     toggleSaved,
     setCurrentList,
     setSaved,
@@ -233,5 +239,8 @@ export const useWordStore = defineStore("wordStore", () => {
     resetSaved,
     setWordVariantsToWord,
     setListName,
+    createAndSetNewList,
+    increasePagination,
+    allFilteredWordsArePaginated,
   };
 });

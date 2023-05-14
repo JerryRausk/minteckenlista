@@ -14,10 +14,10 @@ interface listEventDto {
 }
 
 export default class ApiService {
-  static async CreateNewSharedList(): Promise<List> {
+  static async CreateNewSharedList(): Promise<WordList> {
     const response = await fetch("/api/GetNewList");
     const list: List = await response.json();
-    return list;
+    return new WordList(list.id, list.url, list.created, list.publicName);
   }
 
   static async GetAndActivateSharedList(listurl: string): Promise<void> {

@@ -23,7 +23,7 @@
     <div class="credits">
       <h6 v-if="store.currentList.Url === 'local'">Lokal lista (Offline)</h6>
       <h6 v-else-if="!store.currentList.PublicName">
-        Sparad lista
+        <span class="list-without-name">Ge listan ett namn →</span>
         <span class="edit-icon" @click="changeListNameModalOpen = true"
           >&#9998;</span
         >
@@ -83,5 +83,10 @@ function handleSavedClicked(): void {
   display: inline-block;
   transform: rotateZ(90deg);
   cursor: pointer;
+  margin-left: 4px;
+}
+
+.list-without-name {
+  color: grey;
 }
 </style>
