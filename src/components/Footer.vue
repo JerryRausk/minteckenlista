@@ -22,7 +22,10 @@
       />
     </div>
     <div class="credits">
-      <h6 v-if="store.currentList.Url === 'local'">Lokal lista (Offline)</h6>
+      <h6 v-if="store.isLoading">Laddar...</h6>
+      <h6 v-else-if="store.currentList.Url === 'local'">
+        Lokal lista (Offline)
+      </h6>
       <h6 v-else-if="!store.currentList.PublicName">
         <span class="list-without-name">Ge listan ett namn →</span>
         <span class="edit-icon" @click="changeListNameModalOpen = true"

@@ -45,8 +45,10 @@ onMounted(async () => {
 const noWordsFoundReason = (): string => {
   if (store.filterString !== "") {
     return `Inga ord som innehåller "${store.filterString}" hittades`;
+  } else if (store.filterSaved && store.filterString === "") {
+    return "Inga ord har sparats än";
   } else {
-    return "Annan anledning";
+    return "";
   }
 };
 </script>

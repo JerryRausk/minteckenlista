@@ -26,4 +26,7 @@ if (uri.length === 2) {
       store.activateList(kv[1]);
     }
   }
+} else {
+  const store = useWordStore();
+  store.createAndSetNewList();
 }

@@ -210,9 +210,12 @@ export const useWordStore = defineStore("wordStore", () => {
   }
 
   async function createAndSetNewList() {
+    const loadingMsg = "Lista skapas...";
     resetSaved();
+    loadingReasons.value.push(loadingMsg);
     const newList = await ApiService.CreateNewSharedList();
     setCurrentList(newList);
+    loadingReasons.value = loadingReasons.value.filter((s) => s !== loadingMsg);
   }
 
   async function activateList(listUrl: string) {
