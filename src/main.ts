@@ -1,5 +1,5 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import { faCopy, faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -8,6 +8,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { useWordStore } from "./stores/wordStore";
 library.add(faCopy);
+library.add(faEdit);
 
 const pinia = createPinia();
 const app = createApp(App);

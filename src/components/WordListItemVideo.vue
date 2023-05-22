@@ -21,8 +21,4 @@ function handleVideoClicked(e: Event) {
   e.stopPropagation();
 }
 </script>
-<style scoped>
-video {
-  margin-bottom: 8px;
-}
-</style>
+<style scoped></style>

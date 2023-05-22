@@ -61,6 +61,7 @@ const changeListNameModalOpen = ref<boolean>(false);
 
 function handleSavedClicked(): void {
   store.toggleFilterSaved();
+  store.filterString = "";
 }
 </script>
 <style scoped>

@@ -5,6 +5,11 @@ import WordService from "@/services/wordService";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
+interface NoteEventDTO {
+  word: string;
+  note: string;
+}
+
 export const useWordStore = defineStore("wordStore", () => {
   const ItemsPerScreenHeight = window.screen.height / 85;
   const itemsPerPagination = ItemsPerScreenHeight;
@@ -18,12 +23,6 @@ export const useWordStore = defineStore("wordStore", () => {
   const wordsInitialized = ref<Boolean>(false);
   const loadingReasons = ref<string[]>([]);
   const isLoading = computed<Boolean>(() => loadingReasons.value.length > 0);
-  /*const localStorageService = new LocalStorageService(
-    "savedSigns",
-    "savedSigns",
-    "savedSigns",
-    "word"
-  );*/
 
   watch(filterSaved, () => {
     if (availableCategories.value.includes(filterCateogry.value)) {
@@ -114,8 +113,6 @@ export const useWordStore = defineStore("wordStore", () => {
   async function initializeWords(): Promise<void> {
     words.value = await WordService.getFileWords();
 
-    //localStorageService.getItemsFromIdb(setSavedFromIdb);
-
     wordsInitialized.value = true;
   }
 
@@ -130,16 +127,6 @@ export const useWordStore = defineStore("wordStore", () => {
       _word.setNewVariant(variant)
     );
   }
-  /*
-  async function setSavedFromIdb(word: string): Promise<void> {
-    const wordToUpdate = signs.value.find((swm) => swm.word === word);
-    if (wordToUpdate) {
-      wordToUpdate.selected = true;
-    } else {
-      console.error("Found word in idb that doesnt exist...");
-    }
-  }
-  */
 
   function toggleFilterSaved() {
     filterSaved.value = !filterSaved.value;
@@ -178,28 +165,39 @@ export const useWordStore = defineStore("wordStore", () => {
 
   async function toggleSaved(word: string) {
     const foundWord = words.value.find((w) => w.word === word);
-    if (foundWord) {
-      foundWord.saved = !foundWord.saved;
-      if (foundWord.saved) {
-        // localStorageService.insertIndexDb(word);
-        ApiService.PostNewListEvent({
-          event: "addWord",
-          listUrl: currentList.value.Url,
-          data: foundWord.word,
-        });
-      } else {
-        // localStorageService.deleteIndexDb(word);
-        ApiService.PostNewListEvent({
-          event: "removeWord",
-          listUrl: currentList.value.Url,
-          data: foundWord.word,
-        });
-      }
+    if (!foundWord) {
+      console.error(`Tried to toggle save word ${word} but couldn't find it.`);
+      return;
     }
+
+    foundWord.saved = !foundWord.saved;
+
+    ApiService.PostNewListEvent({
+      event: foundWord.saved ? "addWord" : "removeWord",
+      listUrl: currentList.value.Url,
+      data: foundWord.word,
+    });
   }
 
   function setCurrentList(list: WordList) {
     currentList.value = list;
+  }
+
+  function setNote(word: string, note: string) {
+    const foundWord = words.value.find((w) => w.word === word);
+    if (!foundWord) {
+      console.error(`Tried to set not on word ${word} but couldn't find it.`);
+      return;
+    }
+    foundWord.userNote = note;
+    ApiService.PostNewListEvent({
+      event: "setNote",
+      listUrl: currentList.value.Url,
+      data: JSON.stringify({
+        word: word,
+        note: note,
+      } satisfies NoteEventDTO),
+    });
   }
 
   async function setListName(name: string) {
@@ -236,13 +234,23 @@ export const useWordStore = defineStore("wordStore", () => {
       );
       events.sort((a, b) => a.id - b.id);
       for (const event of events) {
-        const word = event.eventData;
         switch (event.event) {
           case "addWord":
-            setSaved(word);
+            setSaved(event.eventData);
             break;
           case "removeWord":
-            unsetSaved(word);
+            unsetSaved(event.eventData);
+            break;
+          case "setNote":
+            const noteData: NoteEventDTO = JSON.parse(event.eventData);
+            const foundWord = words.value.find((w) => w.word === noteData.word);
+            if (!foundWord) {
+              console.error(
+                `Found setNote event for word ${noteData.word} but couldn't find the word.`
+              );
+              break;
+            }
+            foundWord.userNote = noteData.note;
             break;
           default:
             console.error(`Unrecognized event ${event}`);
@@ -279,5 +287,6 @@ export const useWordStore = defineStore("wordStore", () => {
     allFilteredWordsArePaginated,
     activateList,
     isLoading,
+    setNote,
   };
 });

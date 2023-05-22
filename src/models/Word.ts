@@ -4,12 +4,14 @@ export default class Word {
   category: string;
   variants: WordVariant[];
   saved: boolean;
+  userNote: string;
   constructor(id: number, word: string, category: string) {
     (this.id = id),
       (this.word = word),
       (this.category = category),
       (this.variants = []),
       (this.saved = false);
+    this.userNote = "";
   }
 
   setNewVariant(wordVariant: WordVariant) {

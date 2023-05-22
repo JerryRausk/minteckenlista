@@ -29,14 +29,43 @@
           >
         </li>
       </ul>
-      <Video :variant="word.variants[activeVariantIndex]"
+      <div class="variant-description">
+        <span class="variant-description-showing" v-if="showVariantDescription"
+          >{{ word.variants[activeVariantIndex].description }}
+        </span>
+      </div>
+      <Video
+        @click="showVariantDescription = !showVariantDescription"
+        :variant="word.variants[activeVariantIndex]"
         >Din webläsare stödjer tyvärr inte video</Video
       >
-      {{ word.variants[activeVariantIndex].description }}
+
+      <div class="user-note">
+        <span
+          ><span v-if="!word.userNote" class="no-user-note"
+            >Lägg till en anteckning →</span
+          ><span v-else>{{ word.userNote }}</span
+          ><font-awesome-icon
+            @click="changeNoteModalOpen = true"
+            icon="fa-regular fa-edit"
+            class="icon"
+        /></span>
+        <Teleport to="body">
+          <Transition name="modal">
+            <ChangeNoteModal
+              v-if="changeNoteModalOpen"
+              :current-note="word.userNote"
+              @close-modal="changeNoteModalOpen = false"
+              @confirmed="(n) => setNewNote(n)"
+            ></ChangeNoteModal>
+          </Transition>
+        </Teleport>
+      </div>
     </div>
   </li>
 </template>
 <script setup lang="ts">
+import ChangeNoteModal from "@/components/ChangeNoteModal.vue";
 import Video from "@/components/WordListItemVideo.vue";
 import StringHelper from "@/helpers/stringHelper";
 import Word from "@/models/Word";
@@ -53,7 +82,8 @@ const emit = defineEmits<{
 const store = useWordStore();
 const open = ref<Boolean>(false);
 const activeVariantIndex = ref<number>(0);
-
+const showVariantDescription = ref<boolean>(false);
+const changeNoteModalOpen = ref<boolean>(false);
 async function toggleOpen() {
   if (props.word.variants.length === 0) {
     await store.setWordVariantsToWord(props.word.id);
@@ -64,6 +94,10 @@ async function toggleOpen() {
 function emitSaveToggled(e: Event) {
   e.stopPropagation();
   emit("save-toggled", props.word.word);
+}
+
+async function setNewNote(note: string) {
+  store.setNote(props.word.word, note);
 }
 </script>
 <style scoped>
@@ -109,5 +143,25 @@ hr {
   100% {
     transform: scale(1);
   }
+}
+.user-note {
+  margin-top: 8px;
+}
+.variant-description {
+  font-size: 80%;
+  margin-top: 4px;
+}
+.show-variant-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #0d6efd;
+}
+.no-user-note {
+  color: grey;
+}
+.icon {
+  margin-left: 12px;
+  cursor: pointer;
+  font-size: 0.9em;
 }
 </style>
