@@ -5,10 +5,9 @@
   >
     <div class="flex-row justify-content-between align-items-end">
       <Search class="search-input" />
-      <Picklist class="categories-dropdown" />
+      <!--<Picklist class="categories-dropdown" />-->
     </div>
-
-    <ul class="list-group">
+    <div class="list-item-wrapper">
       <Loader class="loader" v-if="!store.wordsInitialized" />
       <WordListItem
         v-if="store.filteredWordsCount > 0"
@@ -18,7 +17,7 @@
         @save-toggled="(w: string) => store.toggleSaved(w)"
       ></WordListItem>
       <div v-else class="nothing-to-display">{{ noWordsFoundReason() }}</div>
-    </ul>
+    </div>
     <WordListPagination v-if="store.wordsInitialized" />
   </div>
   <IsLoading v-else />
@@ -29,7 +28,6 @@ import {
   default as IsLoading,
   default as Loader,
 } from "@/components/IsLoading.vue";
-import Picklist from "@/components/Picklist.vue";
 import Search from "@/components/Search.vue";
 import WordListItem from "@/components/WordListItem.vue";
 import WordListPagination from "@/components/WordListPagination.vue";
@@ -87,14 +85,32 @@ const noWordsFoundReason = (): string => {
   border-radius: 4px;
 }
 .search-input {
-  width: 40%;
+  width: 100%;
 }
-
 .categories-dropdown {
   width: 40%;
 }
-
 .nothing-to-display {
   align-items: center;
+}
+
+.list-item-wrapper {
+  flex-direction: column;
+  gap: 8px;
+}
+.new-list-item {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  border: 1px solid rgba(0, 0, 75, 0.8);
+  border-radius: 8px;
+  padding: 8px;
+  background: linear-gradient(355deg, white 0%, rgba(0, 0, 125, 0.1) 100%);
+}
+
+.new-list-saved-icon {
+  height: 100%;
+  width: 24px;
 }
 </style>

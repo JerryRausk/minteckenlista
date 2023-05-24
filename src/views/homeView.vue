@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <h1 class="title">Min teckenlista</h1>
+    <h1 class="title">
+      {{ store.currentList.PublicName ?? "Min teckenlista" }}
+    </h1>
     <div>
       <WordList />
       <Footer />
@@ -11,6 +13,8 @@
 <script setup lang="ts">
 import Footer from "@/components/Footer.vue";
 import WordList from "@/components/WordList.vue";
+import { useWordStore } from "@/stores/wordStore";
+const store = useWordStore();
 </script>
 <style scoped>
 .home {

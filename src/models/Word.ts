@@ -5,12 +5,20 @@ export default class Word {
   variants: WordVariant[];
   saved: boolean;
   userNote: string;
-  constructor(id: number, word: string, category: string) {
+  savedDate: Date;
+  constructor(
+    id: number,
+    word: string,
+    category: string,
+    savedDate: Date | string
+  ) {
     (this.id = id),
       (this.word = word),
       (this.category = category),
       (this.variants = []),
       (this.saved = false);
+    this.savedDate =
+      typeof savedDate === "string" ? new Date(savedDate) : savedDate;
     this.userNote = "";
   }
 

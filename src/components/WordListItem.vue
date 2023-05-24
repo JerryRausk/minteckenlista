@@ -1,13 +1,11 @@
 <template>
-  <li class="list-group-item flex-column">
+  <div class="wrapper">
     <div
       class="list-item-header justify-content-between align-items-center flex-row"
       @click="toggleOpen"
     >
       <div class="ms-2 me-auto flex-column">
-        <div class="fw-bold">
-          {{ StringHelper.CapitalizeFirst(word.word) }}
-        </div>
+        <h6>{{ StringHelper.CapitalizeFirst(word.word) }}</h6>
       </div>
 
       <div class="saved-icon-container" @click="emitSaveToggled">
@@ -50,6 +48,9 @@
             icon="fa-regular fa-edit"
             class="icon"
         /></span>
+        <span class="saved-date" v-if="word.saved"
+          >Sparat {{ word.savedDate.toLocaleString("sv") }}</span
+        >
         <Teleport to="body">
           <Transition name="modal">
             <ChangeNoteModal
@@ -62,7 +63,7 @@
         </Teleport>
       </div>
     </div>
-  </li>
+  </div>
 </template>
 <script setup lang="ts">
 import ChangeNoteModal from "@/components/ChangeNoteModal.vue";
@@ -102,7 +103,7 @@ async function setNewNote(note: string) {
 </script>
 <style scoped>
 .saved-icon-container span {
-  font-size: 1.5em;
+  font-size: 1.25em;
   cursor: pointer;
 }
 .variant-list {
@@ -163,5 +164,22 @@ hr {
   margin-left: 12px;
   cursor: pointer;
   font-size: 0.9em;
+}
+
+.wrapper {
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 75, 0.8);
+  border-radius: 8px;
+  padding: 8px;
+  background: linear-gradient(170deg, rgba(0, 0, 75, 0.1) 0%, white 80px);
+}
+
+h6 {
+  margin: 0;
+}
+
+.saved-date {
+  font-size: 0.7rem;
+  text-align: right;
 }
 </style>

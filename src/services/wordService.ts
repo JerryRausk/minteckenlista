@@ -12,7 +12,8 @@ export default class WordService {
           r.word,
           r["category-title"]
             ? r["category-title"].split(" / ")[0]
-            : "Okategoriserat"
+            : "Okategoriserat",
+          new Date(1980, 1, 1)
         )
       );
     });

@@ -11,7 +11,7 @@ interface NoteEventDTO {
 }
 
 export const useWordStore = defineStore("wordStore", () => {
-  const ItemsPerScreenHeight = window.screen.height / 85;
+  const ItemsPerScreenHeight = window.screen.height / 100;
   const itemsPerPagination = ItemsPerScreenHeight;
   const words = ref<Word[]>([]);
   const filterSaved = ref<Boolean>(false);
@@ -141,12 +141,14 @@ export const useWordStore = defineStore("wordStore", () => {
     words.value.map((w) => (w.saved = false));
   }
 
-  function setSaved(word: string) {
+  function setSaved(word: string, savedDate: Date | string) {
+    savedDate = typeof savedDate === "string" ? new Date(savedDate) : savedDate;
     const foundWord = words.value.find(
       (w) => w.word.toLowerCase() === word.toLowerCase()
     );
     if (foundWord) {
       foundWord.saved = true;
+      foundWord.savedDate = savedDate;
     } else {
       console.error(`Tried to set unknown word ${word} to saved.`);
     }
@@ -236,7 +238,7 @@ export const useWordStore = defineStore("wordStore", () => {
       for (const event of events) {
         switch (event.event) {
           case "addWord":
-            setSaved(event.eventData);
+            setSaved(event.eventData, event.eventDate);
             break;
           case "removeWord":
             unsetSaved(event.eventData);
