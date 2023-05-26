@@ -1,7 +1,8 @@
 import WordList from "@/models/SharedList";
 import Word from "@/models/Word";
-import ApiService from "@/services/apiService";
+import ApiService, { ListEventDto } from "@/services/apiService";
 import WordService from "@/services/wordService";
+import { ListEvent } from "@prisma/client";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
@@ -174,7 +175,7 @@ export const useWordStore = defineStore("wordStore", () => {
 
     foundWord.saved = !foundWord.saved;
 
-    ApiService.PostNewListEvent({
+    publishNewListEvent({
       event: foundWord.saved ? "addWord" : "removeWord",
       listUrl: currentList.value.Url,
       data: foundWord.word,
@@ -192,7 +193,7 @@ export const useWordStore = defineStore("wordStore", () => {
       return;
     }
     foundWord.userNote = note;
-    ApiService.PostNewListEvent({
+    publishNewListEvent({
       event: "setNote",
       listUrl: currentList.value.Url,
       data: JSON.stringify({
@@ -236,31 +237,47 @@ export const useWordStore = defineStore("wordStore", () => {
       );
       events.sort((a, b) => a.id - b.id);
       for (const event of events) {
-        switch (event.event) {
-          case "addWord":
-            setSaved(event.eventData, event.eventDate);
-            break;
-          case "removeWord":
-            unsetSaved(event.eventData);
-            break;
-          case "setNote":
-            const noteData: NoteEventDTO = JSON.parse(event.eventData);
-            const foundWord = words.value.find((w) => w.word === noteData.word);
-            if (!foundWord) {
-              console.error(
-                `Found setNote event for word ${noteData.word} but couldn't find the word.`
-              );
-              break;
-            }
-            foundWord.userNote = noteData.note;
-            break;
-          default:
-            console.error(`Unrecognized event ${event}`);
-            break;
-        }
+        handleListEvent(event);
       }
+      loadingReasons.value = loadingReasons.value.filter(
+        (s) => s !== loadingMsg
+      );
     }
-    loadingReasons.value = loadingReasons.value.filter((s) => s !== loadingMsg);
+  }
+  async function publishNewListEvent(event: ListEventDto) {
+    ApiService.PostNewListEvent(event);
+    handleListEvent({
+      id: 0,
+      event: event.event,
+      eventData: event.data,
+      eventDate: new Date(),
+      listId: currentList.value.Id,
+    });
+  }
+
+  async function handleListEvent(event: ListEvent) {
+    switch (event.event) {
+      case "addWord":
+        setSaved(event.eventData, event.eventDate);
+        break;
+      case "removeWord":
+        unsetSaved(event.eventData);
+        break;
+      case "setNote":
+        const noteData: NoteEventDTO = JSON.parse(event.eventData);
+        const foundWord = words.value.find((w) => w.word === noteData.word);
+        if (!foundWord) {
+          console.error(
+            `Found setNote event for word ${noteData.word} but couldn't find the word.`
+          );
+          break;
+        }
+        foundWord.userNote = noteData.note;
+        break;
+      default:
+        console.error(`Unrecognized event ${event}`);
+        break;
+    }
   }
   return {
     wordsInitialized,

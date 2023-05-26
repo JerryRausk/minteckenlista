@@ -1,13 +1,14 @@
 import WordList from "@/models/SharedList";
 import { WordVariant } from "@/models/Word";
 import type {
+  Events,
   List,
   ListEvent,
   WordVariant as WordVariantDto,
 } from "@prisma/client";
 
-interface listEventDto {
-  event: string;
+export interface ListEventDto {
+  event: Events;
   data: string;
   listUrl: string;
 }
@@ -37,7 +38,7 @@ export default class ApiService {
     return await events;
   }
 
-  static async PostNewListEvent(listEvent: listEventDto) {
+  static async PostNewListEvent(listEvent: ListEventDto) {
     await fetch("/api/AddListEvent", {
       method: "POST",
       headers: {
