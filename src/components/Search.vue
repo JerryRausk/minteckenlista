@@ -3,14 +3,17 @@
     class="w-full flex-row bg-white items-center justify-between p-1 border rounded-full border-gray-400"
   >
     <input
-      type="text"
+      type="search"
+      name="search"
       placeholder="Sök..."
       aria-label="Sök"
+      autocomplete="off"
+      aria-autocomplete="none"
       class="border-none outline-none w-full pl-2 text-sm"
       v-model="store.filterString"
     /><Cross
       v-if="store.filterString"
-      class="bg-white mr-1 -ml-10 h-4 w-4"
+      class="bg-white mr-1 -ml-10 h-4 w-4 rounded-full"
       @click="store.filterString = ''"
     /><MagnifyingGlass
       v-else
