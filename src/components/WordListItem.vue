@@ -19,8 +19,8 @@
       >
         <li
           v-for="(_, index) in word.variants"
-          class="rounded text-sm border ps-2 pe-2 pt-0.5 pb-0.5 bg-gray-100"
-          :class="{ 'bg-custom-success-light': index === activeVariantIndex }"
+          class="rounded text-sm border ps-2 pe-2 pt-0.5 pb-0.5"
+          :class="index === activeVariantIndex ? 'bg-green-300' : 'bg-gray-100'"
         >
           <span @click="activeVariantIndex = index"
             >Variant {{ index + 1 }}</span
