@@ -1,12 +1,11 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCopy, faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import App from "./App.vue";
 import { useWordStore } from "./stores/wordStore";
+import "./style.css";
 library.add(faCopy);
 library.add(faEdit);
 

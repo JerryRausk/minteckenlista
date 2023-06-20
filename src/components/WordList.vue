@@ -1,12 +1,5 @@
 <template>
-  <div
-    class="container flex-column word-list no-touch-strangeness"
-    v-if="!store.isLoading"
-  >
-    <div class="flex-row justify-content-between align-items-end">
-      <Search class="search-input" />
-      <!--<Picklist class="categories-dropdown" />-->
-    </div>
+  <div class="word-list no-touch-strangeness" v-if="!store.isLoading">
     <div class="list-item-wrapper">
       <Loader class="loader" v-if="!store.wordsInitialized" />
       <WordListItem
@@ -28,7 +21,6 @@ import {
   default as IsLoading,
   default as Loader,
 } from "@/components/IsLoading.vue";
-import Search from "@/components/Search.vue";
 import WordListItem from "@/components/WordListItem.vue";
 import WordListPagination from "@/components/WordListPagination.vue";
 import { useWordStore } from "@/stores/wordStore";
@@ -57,6 +49,7 @@ const noWordsFoundReason = (): string => {
   width: 95%;
   max-width: 32em;
   gap: 8px;
+  flex-direction: column;
 }
 .icon {
   border: none;
@@ -83,6 +76,11 @@ const noWordsFoundReason = (): string => {
   border: 1px solid #ced4da;
   background-color: white;
   border-radius: 4px;
+}
+.search-wrapper {
+  flex-direction: row;
+  align-items: end;
+  justify-content: space-between;
 }
 .search-input {
   width: 100%;

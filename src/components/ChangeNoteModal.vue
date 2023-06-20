@@ -3,23 +3,24 @@
     <div class="modal-wrapper" @click.self="emit('closeModal')">
       <div class="modal-container">
         <textarea
+          class="outline-none border rounded border-gray-400 p-1 text-sm resize-none"
           ref="noteInput"
           v-model="note"
           type="text"
           placeholder="Skriv en anteckning"
           rows="3"
         ></textarea>
-        <div class="buttons">
+        <div class="flex-row justify-between">
           <button
             type="button"
-            class="btn btn-success"
+            class="rounded bg-green-300 ps-3 pe-3 pt-1 pb-1 border border-gray-200"
             @click="emit('confirmed', note), emit('closeModal')"
           >
             Spara
           </button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="rounded bg-gray-300 ps-3 pe-3 pt-1 pb-1 border border-gray-200"
             @click="emit('closeModal')"
           >
             Avbryt
@@ -76,14 +77,5 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-.buttons {
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-textarea {
-  border-radius: 4px;
-  resize: none;
 }
 </style>

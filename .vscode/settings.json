@@ -9,9 +9,6 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "css.styleSheets": [
-    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-  ],
   "editor.quickSuggestions": {
     "comments": false, // <- no 24x7 IntelliSense in comments
     "strings": true, // but in strings and the other parts of source files

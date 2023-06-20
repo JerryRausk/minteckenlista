@@ -8,11 +8,13 @@
           @keyup.esc="emit('closeModal')"
           @keyup.enter="emit('confirmed', name), emit('closeModal')"
           type="text"
+          class="outline-none border rounded p-1 border-gray-400"
           placeholder="Ge din lista ett namn"
+          spellcheck="false"
         />
         <button
           type="button"
-          class="btn btn-success"
+          class="rounded bg-green-300 ps-3 pe-3 pt-1 pb-1 border-gray-200"
           @click="emit('confirmed', name), emit('closeModal')"
         >
           Spara

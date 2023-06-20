@@ -1,34 +1,34 @@
 <template>
-  <div class="wrapper">
-    <div
-      class="list-item-header justify-content-between align-items-center flex-row"
-      @click="toggleOpen"
-    >
-      <div class="ms-2 me-auto flex-column">
+  <div class="flex-col border-gray-200 border rounded-md p-2">
+    <div class="justify-between align-center flex-row" @click="toggleOpen">
+      <div class="ms-2">
         <h6>{{ StringHelper.CapitalizeFirst(word.word) }}</h6>
       </div>
 
-      <div class="saved-icon-container" @click="emitSaveToggled">
+      <div class="text-xl cursor-pointer" @click="emitSaveToggled">
         <Transition name="bounce" mode="out-in"
           ><span v-if="word.saved">❤️</span><span v-else>🤍</span></Transition
         >
       </div>
     </div>
-    <div class="list-item-body" v-if="open">
-      <hr />
-      <ul v-if="word.variants.length > 1" class="variant-list d-flex flex-row">
+    <div v-if="open">
+      <hr class="mt-4" />
+      <ul
+        v-if="word.variants.length > 1"
+        class="gap-2 mt-3 mb-2 flex flex-row flex-wrap"
+      >
         <li
           v-for="(_, index) in word.variants"
-          class="variant-list-item"
-          :class="{ 'variant-list-item-active': index === activeVariantIndex }"
+          class="rounded text-sm border ps-2 pe-2 pt-0.5 pb-0.5 bg-gray-100"
+          :class="{ 'bg-custom-success-light': index === activeVariantIndex }"
         >
           <span @click="activeVariantIndex = index"
             >Variant {{ index + 1 }}</span
           >
         </li>
       </ul>
-      <div class="variant-description">
-        <span class="variant-description-showing" v-if="showVariantDescription"
+      <div class="text-sm mt-1">
+        <span v-if="showVariantDescription"
           >{{ word.variants[activeVariantIndex].description }}
         </span>
       </div>
@@ -38,17 +38,17 @@
         >Din webläsare stödjer tyvärr inte video</Video
       >
 
-      <div class="user-note">
+      <div class="mt-2 ms-1">
         <span
-          ><span v-if="!word.userNote" class="no-user-note"
+          ><span v-if="!word.userNote" class="text-gray-500"
             >Lägg till en anteckning →</span
           ><span v-else>{{ word.userNote }}</span
           ><font-awesome-icon
             @click="changeNoteModalOpen = true"
             icon="fa-regular fa-edit"
-            class="icon"
+            class="ms-2 cursor-pointer"
         /></span>
-        <span class="saved-date" v-if="word.saved"
+        <span class="text-right text-xs mt-2" v-if="word.saved"
           >Sparat {{ word.savedDate.toLocaleString("sv") }}</span
         >
         <Teleport to="body">
@@ -102,32 +102,6 @@ async function setNewNote(note: string) {
 }
 </script>
 <style scoped>
-.saved-icon-container span {
-  font-size: 1.25em;
-  cursor: pointer;
-}
-.variant-list {
-  list-style: none;
-  padding-left: 0px;
-  margin: 0.5em 0;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.variant-list-item {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  padding-inline: 4px;
-}
-.variant-list-item-active {
-  background-color: rgba(13, 255, 0, 0.1);
-}
-.variant-list-item span {
-  font-size: 0.8em;
-  cursor: pointer;
-}
-hr {
-  margin: 1rem 0 0 0;
-}
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }

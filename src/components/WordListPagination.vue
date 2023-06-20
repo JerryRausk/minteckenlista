@@ -1,8 +1,8 @@
 <template>
-  <div class="flex-row justify-content-center align-items-center">
+  <div class="flex-row justify-center w-full">
     <div>
       <span
-        class="paginate-next"
+        class="cursor-pointer caret-blue-700 underline text-sm text-link"
         v-if="!store.allFilteredWordsArePaginated"
         @click="store.increasePagination()"
         >Ladda fler ord</span
@@ -18,11 +18,5 @@ const store = useWordStore();
 <style scoped>
 .hide {
   visibility: hidden;
-}
-
-.paginate-next {
-  cursor: pointer;
-  color: blue;
-  text-decoration: underline;
 }
 </style>
