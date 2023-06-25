@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home mb-20">
     <h1 class="title m-auto mt-2 mb-4 text-2xl font-semibold">
       {{ store.currentList.PublicName ?? "Min teckenlista" }}
       <span
@@ -9,11 +9,13 @@
       >
     </h1>
 
-    <div>
+    <div class="w-11/12 max-w-xl mx-auto">
       <ShowSavedSwitch class="mb-2" />
       <WordList />
-      <Footer />
     </div>
+  </div>
+  <div class="fixed bottom-0 w-full">
+    <Footer />
   </div>
   <Teleport to="body">
     <Transition name="modal">
@@ -40,7 +42,6 @@ const changeListNameModalOpen = ref<boolean>(false);
 </script>
 <style scoped>
 .home {
-  min-height: 100vh;
-  padding-bottom: 6em;
+  height: calc(100vh-4rem);
 }
 </style>

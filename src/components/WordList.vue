@@ -1,5 +1,5 @@
 <template>
-  <div class="word-list no-touch-strangeness" v-if="!store.isLoading">
+  <div class="word-list no-touch-strangeness w-full" v-if="!store.isLoading">
     <div class="list-item-wrapper">
       <Loader class="loader" v-if="!store.wordsInitialized" />
       <WordListItem
@@ -46,8 +46,6 @@ const noWordsFoundReason = (): string => {
 <style scoped>
 .word-list {
   margin: auto;
-  width: 95%;
-  max-width: 32em;
   gap: 8px;
   flex-direction: column;
 }

@@ -1,11 +1,11 @@
 <template>
   <div
-    class="rounded-full bg-white flex-row w-7/12 m-auto justify-between pl-3 pe-3 pt-1 pb-1 text-sm h-9 border gap-2"
+    class="rounded-full bg-custom-first flex-row w-full m-auto justify-between pl-3 pe-3 pt-1 pb-1 text-sm h-9 border gap-2"
   >
     <div class="h-full w-full text-center cursor-pointer">
       <span
         class="rounded-full h-full pt-1 pb-1 font-semibold"
-        :class="store.filterSaved ? 'bg-gray-200' : ''"
+        :class="store.filterSaved ? 'bg-custom-fourth text-black' : ''"
         @click="handleSwitch(true)"
         >Sparade</span
       >
@@ -13,7 +13,7 @@
     <div class="h-full w-full text-center cursor-pointer">
       <span
         class="rounded-full h-full pt-1 pb-1 font-semibold"
-        :class="store.filterSaved ? '' : 'bg-gray-200'"
+        :class="store.filterSaved ? '' : 'bg-custom-fourth text-black'"
         @click="handleSwitch(false)"
         >Alla</span
       >

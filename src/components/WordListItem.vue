@@ -1,5 +1,7 @@
 <template>
-  <div class="flex-col border-gray-200 border rounded-md p-2">
+  <div
+    class="flex-col border-custom-second border rounded-md p-2 bg-custom-first"
+  >
     <div class="justify-between align-center flex-row" @click="toggleOpen">
       <div class="ms-2">
         <h6>{{ StringHelper.CapitalizeFirst(word.word) }}</h6>
@@ -19,8 +21,12 @@
       >
         <li
           v-for="(_, index) in word.variants"
-          class="rounded text-sm border ps-2 pe-2 pt-0.5 pb-0.5"
-          :class="index === activeVariantIndex ? 'bg-green-300' : 'bg-gray-100'"
+          class="rounded text-sm pl-2 pr-2 pt-1 pb-1 cursor-pointer"
+          :class="
+            index === activeVariantIndex
+              ? 'bg-custom-success'
+              : 'bg-custom-inactive'
+          "
         >
           <span @click="activeVariantIndex = index"
             >Variant {{ index + 1 }}</span

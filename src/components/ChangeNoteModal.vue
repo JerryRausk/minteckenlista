@@ -1,26 +1,26 @@
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper" @click.self="emit('closeModal')">
-      <div class="modal-container">
+      <div class="modal-container bg-custom-first">
         <textarea
-          class="outline-none border rounded border-gray-400 p-1 text-sm resize-none"
+          class="outline-none border rounded bg-custom-fourth p-1 text-sm resize-none text-black"
           ref="noteInput"
           v-model="note"
           type="text"
-          placeholder="Skriv en anteckning"
+          placeholder="Skriv en anteckning..."
           rows="3"
         ></textarea>
         <div class="flex-row justify-between">
           <button
             type="button"
-            class="rounded bg-green-300 ps-3 pe-3 pt-1 pb-1 border border-gray-200"
+            class="rounded bg-custom-success ps-3 pe-3 pt-1 pb-1"
             @click="emit('confirmed', note), emit('closeModal')"
           >
             Spara
           </button>
           <button
             type="button"
-            class="rounded bg-gray-300 ps-3 pe-3 pt-1 pb-1 border border-gray-200"
+            class="rounded bg-custom-inactive ps-3 pe-3 pt-1 pb-1"
             @click="emit('closeModal')"
           >
             Avbryt
@@ -56,7 +56,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.25);
   display: table;
 }
 
@@ -69,7 +69,6 @@ onMounted(() => {
   width: 90%;
   margin: 0px auto;
   padding: 2rem 2rem;
-  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;

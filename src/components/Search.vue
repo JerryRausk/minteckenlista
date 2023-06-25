@@ -9,7 +9,7 @@
       aria-label="Sök"
       autocomplete="off"
       aria-autocomplete="none"
-      class="border-none outline-none w-full pl-2 text-sm"
+      class="border-none outline-none w-full pl-2 text-sm text-black"
       v-model="store.filterString"
     /><Cross
       v-if="store.filterString"
@@ -18,7 +18,7 @@
     /><MagnifyingGlass
       v-else
       stroke-color="grey"
-      class="bg-white mr-1 -ml-10 h-4 w-4"
+      class="bg-white mr-1 -ml-10 h-4 w-4 rounded-full"
     />
   </div>
 </template>

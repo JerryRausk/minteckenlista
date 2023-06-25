@@ -6,19 +6,19 @@
   </Teleport>
 
   <div
-    class="fixed bottom-0 w-full h-16 mt-2 pl-3 pr-3 justify-between flex flex-row bg-gray-100 border-t-gray-400"
+    class="bottom-0 absolute w-full h-16 pl-3 pr-3 justify-between flex flex-row bg-custom-first border-t-gray-400"
   >
     <div class="w-2/12"></div>
-    <div class="justify-between mb-2 mt-1 text-center">
-      <Search />
+    <div class="mt-2 text-center w-full place-items-center">
+      <Search class="w-48" />
       <a
-        class="text-custom-link underline text-xs"
+        class="text-custom-link underline text-xs mt-1"
         href="https://teckensprakslexikon.su.se/"
         target="_blank"
         >Material från Teckenspråkslexikon</a
       >
     </div>
-    <div class="w-2/12">
+    <div class="w-2/12 items-end">
       <FooterItem title="Dela" icon="✉️" @click="shareModalOpen = true" />
     </div>
   </div>

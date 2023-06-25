@@ -1,33 +1,38 @@
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper" @click.self="emit('closeModal')">
-      <div class="modal-container">
+      <div class="modal-container bg-custom-first items-center">
         <div
           v-if="store.currentList.Url !== 'local'"
-          class="display-saved-list-url dflex flex-row justify-content-between align-items-center"
+          class="flex-row gap-2 w-full"
         >
-          <input class="form-control" type="text" :value="currentLocation" />
+          <input
+            class="rounded text-black text-sm w-full"
+            type="text"
+            :value="currentLocation"
+          />
           <font-awesome-icon
             icon="fa-regular fa-copy"
-            class="icon"
+            class="cursor-pointer text-lg border rounded p-1"
             @click="handleCopyUrl()"
           />
         </div>
-
-        <button
-          type="button"
-          class="btn btn-success"
-          @click="handleCreateNewList()"
-        >
-          Skapa ny tom delad lista
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="emit('closeModal')"
-        >
-          Stäng
-        </button>
+        <div class="flex-row justify-center gap-2 w-full">
+          <button
+            type="button"
+            class="rounded pb-1 pt-1 bg-custom-success pl-2 pr-2"
+            @click="handleCreateNewList()"
+          >
+            Skapa ny lista
+          </button>
+          <button
+            type="button"
+            class="rounded bg-custom-inactive w-fit pt-1 pb-1 pl-2 pr-2"
+            @click="emit('closeModal')"
+          >
+            Stäng
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -61,7 +66,7 @@ const handleCopyUrl = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.25);
   display: table;
 }
 
@@ -74,7 +79,6 @@ const handleCopyUrl = () => {
   width: 300px;
   margin: 0px auto;
   padding: 2rem 2rem;
-  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -82,13 +86,5 @@ const handleCopyUrl = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.display-saved-list-url {
-  gap: 16px;
-}
-.icon {
-  font-size: 1.3rem;
-  cursor: pointer;
 }
 </style>

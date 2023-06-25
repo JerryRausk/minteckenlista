@@ -8,7 +8,7 @@ import Home from "@/views/homeView.vue";
 
 <style>
 #app {
-  min-height: 100vh;
+  min-height: 100%;
   display: flex;
 }
 div {

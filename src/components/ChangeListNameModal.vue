@@ -1,20 +1,20 @@
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper" @click.self="emit('closeModal')">
-      <div class="modal-container">
+      <div class="modal-container bg-custom-first">
         <input
           ref="nameInput"
           v-model="name"
           @keyup.esc="emit('closeModal')"
           @keyup.enter="emit('confirmed', name), emit('closeModal')"
           type="text"
-          class="outline-none border rounded p-1 border-gray-400"
+          class="outline-none border rounded p-1 border-gray-400 text-black"
           placeholder="Ge din lista ett namn"
           spellcheck="false"
         />
         <button
           type="button"
-          class="rounded bg-green-300 ps-3 pe-3 pt-1 pb-1 border-gray-200"
+          class="rounded bg-custom-success pl-2 pr-2 pt-1 pb-1"
           @click="emit('confirmed', name), emit('closeModal')"
         >
           Spara
@@ -49,7 +49,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.25);
   display: table;
 }
 
@@ -62,7 +62,6 @@ onMounted(() => {
   width: fit-content;
   margin: 0px auto;
   padding: 2rem 2rem;
-  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
